@@ -27,12 +27,15 @@ Func _GetSettings()
 	$arTemp = StringRegExp($sSettings, '(?m)^(jdbc.url=jdbc:oracle:thin:@)(.+?):1521:pcat$', $STR_REGEXPARRAYMATCH)
 	If Not @error Then $sIP = $arTemp[1]
 
-	; Get Login and Password from internal.config file
+	; Get Platform, Login and Password from internal.config file
 	$sConf = FileRead($sConfPath)
 	If @error Then
 		Return SetError(3, 1)
 	EndIf
-	; ConsoleWrite($sConf & @CRLF)
+	; Set global $sPlatform variable to the value from internal.config
+	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommDefaultPlatform=)(.*$)', $STR_REGEXPARRAYMATCH)
+	If Not @error Then $sDefaultPlatform = $arTemp[1]
+
 	; Set global $sLogin and $sPassword variables to the values from internal.config
 	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommLogin=)(.*$)', $STR_REGEXPARRAYMATCH)
 	If Not @error Then $sLogin = $arTemp[1]
