@@ -82,8 +82,8 @@ Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 
 	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
 	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $sTimezone & ' ' & $sDefaultConf & '"')
-	; Remove existing lines with Login And Password
-	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*?$', '')
+	; Remove existing lines with Login And Password and Platform
+	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
 	; Add new lines with Login and Password
 	$sOutput = $sOutput & "#pcCommLogin=" & $sLogin & @CRLF & "#pcCommPassword=" & $sPassword & @CRLF & "#pcCommDefaultPlatform=" & $sPlatform
 
