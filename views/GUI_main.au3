@@ -8,7 +8,7 @@ Func _MainGUI()
 	Local $oMainGUI = ObjCreate("Scripting.Dictionary")
     ; Create a GUI
     $oMainGUI("mainWindow") = GUICreate("PCAT Commander", 210, 200)
-	GUISetIcon("PCAT_commander.ico")
+	GUISetIcon("pccomm.ico")
 	; Create a label for Combobox
 	$oMainGUI("platfLabel") = GUICtrlCreateLabel("Platform:", 10, 10)
     ; Create a combobox control.
@@ -37,5 +37,10 @@ Func _MainGUI()
 EndFunc
 
 Func _MsgBoxPCATRunning($hPCAT)
-	MsgBox(4144,"PCAT commander info", "PCAT '"  & WinGetTitle($hPCAT) & "' is already running!")
+	MsgBox(4144,"PCAT commander info", WinGetTitle($hPCAT) & " is already running!")
+EndFunc
+
+Func _TrayTip($sMessage, $iTimeout, $sTipType=1)
+	Const $TITLE = "PCAT Commander"
+	TrayTip($TITLE, $sMessage, $iTimeout, $sTipType)
 EndFunc

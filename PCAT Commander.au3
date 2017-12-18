@@ -22,89 +22,83 @@ _SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"),
 ; Display the GUI.
 GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
+; Loop until the user exits.
+While 1
+	$hPCAT = _getPCATHandler()
+	$newTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
+	If $hPCAT And WinGetTitle($hPCAT) <> $newTitle Then
+		WinSetTitle($hPCAT, "", $newTitle)
+	EndIf
+	Switch GUIGetMsg()
+		Case $GUI_EVENT_CLOSE
+			ExitLoop
 
-    ; Loop until the user exits.
-    While 1
-		$hPCAT = _getPCATHandler()
-		$newTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
-		If $hPCAT And WinGetTitle($hPCAT) <> $newTitle Then
-			WinSetTitle($hPCAT, "", $newTitle)
-		EndIf
-        Switch GUIGetMsg()
-            Case $GUI_EVENT_CLOSE
-                ExitLoop
+		Case $oMainGUI("platfCombo")
+			$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
+			$oPlatfDefault = _GetPlatfbyName($sComboRead)
+			_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
-			Case $oMainGUI("platfCombo")
-				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
-				$oPlatfDefault = _GetPlatfbyName($sComboRead)
-				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
-
-            Case $oMainGUI("runButton")
-				; If PCAT is not running, update configs, store options and run PCAT
-				If Not $hPCAT Then
-					_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"))
-					; If error occured on config update, raise an error, continue loop
-					If @error Then
-						_RaiseError(@error, @extended)
-						ContinueCase
-					EndIf
-
-					; Read the GUI data and store it
-					$sLogin = GUICtrlRead($oMainGUI("loginBox"))
-					If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
-					$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
-					ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
-									" AutoVersion: " & $iVersion & @CRLF)
-
-
-					; Run PCAT
-					Run($sAppPath)
-					If @error Then
-						_RaiseError(4)
-						ContinueCase
-					EndIf
-
-					; Wait for PCAT Login window
-					TrayTip("PCAT Commander", "Waiting for PCAT Login Window", 30)
-					Local $hLogin = WinWait("[TITLE:Login; CLASS:SunAwtDialog]", "", 30)
-					If Not $hLogin Then
-						_RaiseError(5)
-						ContinueCase
-					EndIf
-
-					; Try to autologin if Login InputBox is not Empty
-					If $sLogin Then
-						TrayTip("PCAT Commander", "Trying to Login to PCAT", 3)
-						_AutoLogin($hLogin)
-						;ConsoleWrite (WinGetTitle("[CLASS:SunAwtDialog]") & @CRLF)
-						;TrayTip("My Title", "TEST", 15)
-						If $iVersion = 1 Then
-							; Wait for PCAT "Select Reseller Version" Window
-							TrayTip("PCAT Commander", "Waiting for PCAT Select Reseller Version Window", 30)
-							Local $hVersion = WinWait("[TITLE:Select Reseller Version; CLASS:SunAwtDialog]", "", 30)
-							If Not $hVersion Then
-								_RaiseError(6)
-								ContinueCase
-							EndIf
-							TrayTip("PCAT Commander", "Selecting the Latest version...", 2)
-							_AutoVersion($hVersion)
-						EndIf
-					EndIf
-
-					;MsgBox($MB_SYSTEMMODAL, "", "The combobox is currently displaying: " & $sComboRead, 0, $hGUI)
-				Else
-					_MsgBoxPCATRunning($hPCAT)
-					WinActivate($hPCAT)
-					;MsgBox(4132, "PCAT commander question", "PCAT is already running, Do you want to close it?"
+		Case $oMainGUI("runButton")
+			; If PCAT is not running, update configs, store options and run PCAT
+			If Not $hPCAT Then
+				_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"))
+				; If error occured on config update, raise an error, continue loop
+				If @error Then
+					_RaiseError(@error, @extended)
+					ContinueCase
 				EndIf
 
-        EndSwitch
-    WEnd
+				; Read the GUI data and store it
+				$sLogin = GUICtrlRead($oMainGUI("loginBox"))
+				If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
+				$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
+				ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
+								" AutoVersion: " & $iVersion & @CRLF)
 
-    ; Delete the previous GUI and all controls.
-    GUIDelete($oMainGUI("mainWindow"))
+				; Run PCAT
+				Run($sAppPath)
+				If @error Then
+					_RaiseError(4)
+					ContinueCase
+				EndIf
 
+				; Wait for PCAT Login window
+				_TrayTip("Waiting for PCAT Login Window", 30)
+				Local $hLogin = WinWait("[TITLE:Login; CLASS:SunAwtDialog]", "", 30)
+				If Not $hLogin Then
+					_RaiseError(5)
+					ContinueCase
+				EndIf
 
+				; Try to autologin if Login InputBox is not Empty
+				If $sLogin Then
+					_TrayTip("Trying to Login to PCAT", 3)
+					_AutoLogin($hLogin)
+					;ConsoleWrite (WinGetTitle("[CLASS:SunAwtDialog]") & @CRLF)
+					;TrayTip("My Title", "TEST", 15)
+					If $iVersion = 1 Then
+						; Wait for PCAT "Select Reseller Version" Window
+						_TrayTip("Waiting for PCAT Select Reseller Version Window", 30)
+						Local $hVersion = WinWait("[TITLE:Select Reseller Version; CLASS:SunAwtDialog]", "", 30)
+						If Not $hVersion Then
+							;_RaiseError(6)
+							_TrayTip("Timeout in waiting for Select Version Window", 3, 3)
+							ContinueCase
+						EndIf
+						_TrayTip("Selecting the Latest version", 2)
+						_AutoVersion($hVersion)
+					EndIf
+				EndIf
+			Else
+				_MsgBoxPCATRunning($hPCAT)
+				WinActivate($hPCAT)
+			EndIf
+
+	EndSwitch
+WEnd
+
+; Delete the previous GUI and all controls.
+GUIDelete($oMainGUI("mainWindow"))
 
 Func _getPCATHandler()
 	Local $hPCAT = WinGetHandle("[REGEXPTITLE:(Login.*|Select Reseller Version.*|Product Catalog.*|PCAT.*); REGEXPCLASS:SunAwt(Dialog|Frame)]", "")
