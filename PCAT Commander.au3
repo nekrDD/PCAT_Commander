@@ -40,9 +40,6 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
             Case $oMainGUI("runButton")
-				; Check that PCAT is not running
-				$hPCAT = _getPCATHandler()
-
 				; If PCAT is not running, update configs, store options and run PCAT
 				If Not $hPCAT Then
 					_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"))
