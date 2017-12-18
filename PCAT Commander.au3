@@ -48,7 +48,7 @@ While 1
 		Case $oMainGUI("runButton")
 			; If PCAT is not running, update configs, store options and run PCAT
 			If Not $hPCAT Then
-				_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"))
+				_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"), $oPlatfDefault("name"))
 				; If error occured on config update, raise an error, continue loop
 				If @error Then
 					_RaiseError(@error, @extended)

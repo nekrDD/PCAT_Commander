@@ -48,7 +48,7 @@ EndFunc
 
 ;_UpdateInternalConf("test", "1.1.1.1")
 
-Func _UpdateInternalConf($sTimezone, $sIP)
+Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 	Local $sConf, $sSettings, $sOutput
 	;ConsoleWrite("running update config...")
 
@@ -82,7 +82,7 @@ Func _UpdateInternalConf($sTimezone, $sIP)
 	; Remove existing lines with Login And Password
 	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*?$', '')
 	; Add new lines with Login and Password
-	$sOutput = $sOutput & "#pcCommLogin=" & $sLogin & @CRLF & "#pcCommPassword=" & $sPassword
+	$sOutput = $sOutput & "#pcCommLogin=" & $sLogin & @CRLF & "#pcCommPassword=" & $sPassword & @CRLF & "#pcCommDefaultPlatform=" & $sPlatform
 
 	; rewriting the file
 	If Not _RewriteFile($sConfPath, $sOutput) Then
