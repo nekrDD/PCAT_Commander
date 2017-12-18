@@ -25,7 +25,7 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
     ; Loop until the user exits.
     While 1
-		$hPCAT = WinGetHandle("[REGEXPTITLE:(Product Catalog.*|PCAT.*); REGEXPCLASS:SunAwt(Dialog|Frame)]", "")
+		$hPCAT = _getPCATHandler()
 		$newTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 		If $hPCAT And WinGetTitle($hPCAT) <> $newTitle Then
 			WinSetTitle($hPCAT, "", $newTitle)
@@ -35,9 +35,14 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
                 ExitLoop
 
 			Case $oMainGUI("platfCombo")
-				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
-				$oPlatfDefault = _GetPlatfbyName($sComboRead)
-				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
+				If Not $hPCAT Then
+					$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
+					$oPlatfDefault = _GetPlatfbyName($sComboRead)
+					_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
+				Else
+					_MsgBoxPCATRunning()
+					WinActivate($hPCAT)
+				EndIf
 
             Case $oMainGUI("runButton")
 				; Check that PCAT is not running
@@ -96,7 +101,7 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
 					;MsgBox($MB_SYSTEMMODAL, "", "The combobox is currently displaying: " & $sComboRead, 0, $hGUI)
 				Else
-					MsgBox(4144,"PCAT commander info", "PCAT '"  & WinGetTitle($hPCAT) & "' is already running!")
+					_MsgBoxPCATRunning()
 					WinActivate($hPCAT)
 					;MsgBox(4132, "PCAT commander question", "PCAT is already running, Do you want to close it?"
 				EndIf

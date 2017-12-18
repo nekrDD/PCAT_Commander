@@ -35,3 +35,8 @@ Func _MainGUI()
 	$oMainGUI("runButton") = GUICtrlCreateButton("Run PCAT", 110, 170, 85, 25)
 	return $oMainGUI
 EndFunc
+
+Func _MsgBoxPCATRunning()
+
+	MsgBox(4144,"PCAT commander info", "PCAT '"  & WinGetTitle($hPCAT) & "' is already running!")
+EndFunc
