@@ -5,9 +5,9 @@
 Global $sAppDir, $sConfPath, $sAppPath, $sSettingsPath, $arPlatforms, $sDefaultConf, $sPlatformFromConfig, _
 		$oPlatfDefault, $sLogin, $sPassword, $bVersion, $sIP
 
-$sLogin = ""
+;$sLogin = ""
 
-$sPassword = ""
+;$sPassword = ""
 
 $iVersion = 1
 

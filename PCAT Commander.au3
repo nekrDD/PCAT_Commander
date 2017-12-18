@@ -13,6 +13,12 @@ For $i = 0 To UBound($arPlatforms) - 1
 Next
 ; read the settings
 _GetSettings()
+; check and update the default platform object
+; use the value from config if it exists
+If $sPlatformFromConfig Then
+	$oPlatfDefault = _GetPlatfbyName($sPlatformFromConfig)
+EndIf
+
 $oMainGUI = _MainGUI()
 ; Update platforms Combobox with data
 GUICtrlSetData($oMainGUI("platfCombo"), $sPatforms, $oPlatfDefault("name"))
@@ -48,6 +54,9 @@ While 1
 		Case $oMainGUI("runButton")
 			; If PCAT is not running, update configs, store options and run PCAT
 			If Not $hPCAT Then
+				; Read the GUI data and store it
+				$sLogin = GUICtrlRead($oMainGUI("loginBox"))
+				If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
 				_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"), $oPlatfDefault("name"))
 				; If error occured on config update, raise an error, continue loop
 				If @error Then
@@ -55,9 +64,7 @@ While 1
 					ContinueCase
 				EndIf
 
-				; Read the GUI data and store it
-				$sLogin = GUICtrlRead($oMainGUI("loginBox"))
-				If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
+
 				$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
 				;ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
 				;				" AutoVersion: " & $iVersion & @CRLF)
