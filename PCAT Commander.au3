@@ -34,10 +34,17 @@ While 1
 			ExitLoop
 
 		Case $oMainGUI("platfCombo")
-			$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
-			$oPlatfDefault = _GetPlatfbyName($sComboRead)
-			_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
-
+			If Not $hPCAT Then
+				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
+				$oPlatfDefault = _GetPlatfbyName($sComboRead)
+				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
+			Else
+				_MsgBoxPCATRunning($hPCAT)
+				WinActivate($hPCAT)
+				; reset platfComboBox to default platform name
+				GUICtrlSetData($oMainGUI("platfCombo"), "")
+				GUICtrlSetData($oMainGUI("platfCombo"), $sPatforms, $oPlatfDefault("name"))
+			EndIf
 		Case $oMainGUI("runButton")
 			; If PCAT is not running, update configs, store options and run PCAT
 			If Not $hPCAT Then
@@ -52,8 +59,8 @@ While 1
 				$sLogin = GUICtrlRead($oMainGUI("loginBox"))
 				If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
 				$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
-				ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
-								" AutoVersion: " & $iVersion & @CRLF)
+				;ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
+				;				" AutoVersion: " & $iVersion & @CRLF)
 
 				; Run PCAT
 				Run($sAppPath)
@@ -74,8 +81,6 @@ While 1
 				If $sLogin Then
 					_TrayTip("Trying to Login to PCAT", 3)
 					_AutoLogin($hLogin)
-					;ConsoleWrite (WinGetTitle("[CLASS:SunAwtDialog]") & @CRLF)
-					;TrayTip("My Title", "TEST", 15)
 					If $iVersion = 1 Then
 						; Wait for PCAT "Select Reseller Version" Window
 						_TrayTip("Waiting for PCAT Select Reseller Version Window", 30)
