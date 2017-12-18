@@ -36,7 +36,6 @@ Func _MainGUI()
 	return $oMainGUI
 EndFunc
 
-Func _MsgBoxPCATRunning()
-
+Func _MsgBoxPCATRunning($hPCAT)
 	MsgBox(4144,"PCAT commander info", "PCAT '"  & WinGetTitle($hPCAT) & "' is already running!")
 EndFunc

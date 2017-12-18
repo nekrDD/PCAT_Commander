@@ -35,14 +35,9 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
                 ExitLoop
 
 			Case $oMainGUI("platfCombo")
-				If Not $hPCAT Then
-					$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
-					$oPlatfDefault = _GetPlatfbyName($sComboRead)
-					_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
-				Else
-					_MsgBoxPCATRunning()
-					WinActivate($hPCAT)
-				EndIf
+				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
+				$oPlatfDefault = _GetPlatfbyName($sComboRead)
+				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
             Case $oMainGUI("runButton")
 				; Check that PCAT is not running
@@ -101,7 +96,7 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
 					;MsgBox($MB_SYSTEMMODAL, "", "The combobox is currently displaying: " & $sComboRead, 0, $hGUI)
 				Else
-					_MsgBoxPCATRunning()
+					_MsgBoxPCATRunning($hPCAT)
 					WinActivate($hPCAT)
 					;MsgBox(4132, "PCAT commander question", "PCAT is already running, Do you want to close it?"
 				EndIf
