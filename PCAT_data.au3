@@ -1,7 +1,9 @@
 #include <File.au3>
 
-Global $sAppDir, $sConfPath, $sAppPath, $sSettingsPath, $arPlatforms, $sDefaultConf, $oPlatfDefault, _
-		$sLogin, $sPassword, $bVersion, $sIP
+; oPlatfDefa
+
+Global $sAppDir, $sConfPath, $sAppPath, $sSettingsPath, $arPlatforms, $sDefaultConf, $sPlatformFromConfig, _
+		$oPlatfDefault, $sLogin, $sPassword, $bVersion, $sIP
 
 $sLogin = ""
 

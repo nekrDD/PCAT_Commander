@@ -34,7 +34,7 @@ Func _GetSettings()
 	EndIf
 	; Set global $sPlatform variable to the value from internal.config
 	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommDefaultPlatform=)(.*$)', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $sDefaultPlatform = $arTemp[1]
+	If Not @error Then $sPlatformFromConfig = $arTemp[1]
 
 	; Set global $sLogin and $sPassword variables to the values from internal.config
 	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommLogin=)(.*$)', $STR_REGEXPARRAYMATCH)
