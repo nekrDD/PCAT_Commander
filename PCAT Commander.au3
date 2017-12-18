@@ -1,62 +1,28 @@
-#include <GUIConstantsEx.au3>
-#include <MsgBoxConstants.au3>
-#include <EditConstants.au3>
-#include <ComboConstants.au3>
-
+#include "views/GUI_main.au3"
 #include "PCAT_update_configs.au3"
 
+Local $hPCAT
+Local $sComboRead = ""
+Local $newTitle
+Local $sPatforms = ""
+Local $oMainGUI = ObjCreate("Scripting.Dictionary")
 
 ; Create string for PlatfCombo
-$sPatforms = ""
-
 For $i = 0 To UBound($arPlatforms) - 1
     $sPatforms = $sPatforms & $arPlatforms[$i]("name") & "|"
 Next
+; read the settings
 _GetSettings()
-_CreateGUI()
+$oMainGUI = _MainGUI()
+; Update platforms Combobox with data
+GUICtrlSetData($oMainGUI("platfCombo"), $sPatforms, $oPlatfDefault("name"))
+; Update Platform Info Boxes with data
+_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
-; Create GUI Function
-Func _CreateGUI()
-	Local $hPCAT
-    ; Create a GUI
+; Display the GUI.
+GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
-    Local $hGUI = GUICreate("PCAT Commander", 210, 200)
-	GUISetIcon("PCAT_commander.ico")
-	; Create a label for Combobox
-	Local $idPlatfLabel = GUICtrlCreateLabel("Platform:", 10, 10)
-    ; Create a combobox control.
-    Local $idPlatfCombo = GUICtrlCreateCombo("", 70, 10, 120, 30, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
-	; Create a label for IP
-	Local $idIPLabel = GUICtrlCreateLabel("IP address:", 10, 40)
-	; Create a inputBox for IP address
-	Local $idIPBox = GUICtrlCreateInput("IP address", 70, 40, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
-	; Create a label for TimeZone
-	Local $idTZLabel = GUICtrlCreateLabel("Timezone:", 10, 60)
-	; Create a label for Timezone value
-	Local $idTZBox = GUICtrlCreateInput("Timezone", 70, 60, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
-	; Create a label for Login
-	Local $idLoginLabel = GUICtrlCreateLabel("Login:", 10, 90)
-	; Create an inputBox for Login
-	Local $idLoginBox = GUICtrlCreateInput("", 70, 90, 120, 20)
-	; Create a label for Password
-	Local $idPasswordLabel = GUICtrlCreateLabel("Password:", 10, 110)
-	; Create an inputBox for Password
-	Local $idPasswordBox = GUICtrlCreateInput("", 70, 110, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_PASSWORD))
-	; Create Auto Select Latest Version checkBox
-	Local $idVersionCheckBox = GUICtrlCreateCheckbox("Auto select the latest version", 10, 140, $ES_READONLY)
-	; Create a Run button
-	Local $runButton = GUICtrlCreateButton("Run PCAT", 110, 170, 85, 25);
 
-	; Update platforms Combobox with data
-	GUICtrlSetData($idPlatfCombo, $sPatforms, $oPlatfDefault("name"))
-	; Update Platform Info Boxes with data
-	_SetPlatfControls($idIPBox, $idTZBox, $idLoginBox, $idPasswordBox, $idVersionCheckBox)
-
-    ; Display the GUI.
-    GUISetState(@SW_SHOW, $hGUI)
-
-    Local $sComboRead = ""
-	Local $newTitle
     ; Loop until the user exits.
     While 1
 		$hPCAT = WinGetHandle("[REGEXPTITLE:(Product Catalog.*|PCAT.*); REGEXPCLASS:SunAwt(Dialog|Frame)]", "")
@@ -65,15 +31,15 @@ Func _CreateGUI()
 			WinSetTitle($hPCAT, "", $newTitle)
 		EndIf
         Switch GUIGetMsg()
-            Case $GUI_EVENT_CLOSE, $idClose
+            Case $GUI_EVENT_CLOSE
                 ExitLoop
 
-			Case $idPlatfCombo
-				$sComboRead = GUICtrlRead($idPlatfCombo)
+			Case $oMainGUI("platfCombo")
+				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
 				$oPlatfDefault = _GetPlatfbyName($sComboRead)
-				_SetPlatfControls($idIPBox, $idTZBox, $idLoginBox, $idPasswordBox, $idVersionCheckBox)
+				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
-            Case $runButton
+            Case $oMainGUI("runButton")
 				; Check that PCAT is not running
 				$hPCAT = _getPCATHandler()
 
@@ -87,9 +53,9 @@ Func _CreateGUI()
 					EndIf
 
 					; Read the GUI data and store it
-					$sLogin = GUICtrlRead($idLoginBox)
-					If $sLogin Then $sPassword = GUICtrlRead($idPasswordBox)
-					$iVersion = GUICtrlRead($idVersionCheckBox)
+					$sLogin = GUICtrlRead($oMainGUI("loginBox"))
+					If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
+					$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
 					ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
 									" AutoVersion: " & $iVersion & @CRLF)
 
@@ -139,8 +105,8 @@ Func _CreateGUI()
     WEnd
 
     ; Delete the previous GUI and all controls.
-    GUIDelete($hGUI)
-EndFunc
+    GUIDelete($oMainGUI("mainWindow"))
+
 
 
 Func _getPCATHandler()
