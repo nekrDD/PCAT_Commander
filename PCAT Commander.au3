@@ -30,7 +30,7 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 
 ; Loop until the user exits.
 While 1
-	$hPCAT = _getPCATHandler()
+	$hPCAT = _GetPCATHandler()
 	$newTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 	If $hPCAT And WinGetTitle($hPCAT) <> $newTitle Then
 		WinSetTitle($hPCAT, "", $newTitle)
@@ -112,7 +112,7 @@ WEnd
 ; Delete the previous GUI and all controls.
 GUIDelete($oMainGUI("mainWindow"))
 
-Func _getPCATHandler()
+Func _GetPCATHandler()
 	Local $hPCAT = WinGetHandle("[REGEXPTITLE:(Login.*|Select Reseller Version.*|Product Catalog.*|PCAT.*); REGEXPCLASS:SunAwt(Dialog|Frame)]", "")
 	If $hPCAT Then
 		Return $hPCAT
