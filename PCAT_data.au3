@@ -13,7 +13,7 @@ $iVersion = 1
 
 $sDefaultConf = "-J-XX:NewRatio=2 -J-XX:NewSize=100m -J-XX:MaxNewSize=320m -J-Xms416m -J-Xmx1024m -J-XX:PermSize=128m -J-XX:MaxPermSize=256m -J-Xverify:none -J-Dnetbeans.logger.console=true -J-ea -J-XX:+HeapDumpOnOutOfMemoryError -J-XX:HeapDumpPath=D: -J-Xloggc:D:/gc.log -J-verbose:gc -J-XX:+PrintGCDateStamps -J-XX:+PrintGCDetails"
 
-$sAppDir = "C:\Program Files (x86)\Comverse\CBS-PC\"
+$sAppDir = "C:\Program Files\Comverse\CBS-PC\"
 
 $sAppPath = _PathFull("internal\bin\Product Catalog.exe", $sAppDir)
 
