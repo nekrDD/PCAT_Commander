@@ -1,27 +1,28 @@
 #include "views/GUI_main.au3"
+#include "models/platforms.au3"
 #include "PCAT_update_configs.au3"
 
 Local $hPCAT
 Local $sComboRead = ""
+Local $oPlatfDefault
+Local $sPlatfDefaultName
+Local $sPlatfDefaultIP
+Local $sPlatfDefaultTZ
 Local $newTitle
-Local $sPatforms = ""
 Local $oMainGUI = ObjCreate("Scripting.Dictionary")
 
-; Create string for PlatfCombo
-For $i = 0 To UBound($arPlatforms) - 1
-    $sPatforms = $sPatforms & $arPlatforms[$i]("name") & "|"
-Next
 ; read the settings
 _GetSettings()
 ; check and update the default platform object
 ; use the value from config if it exists
 If $sPlatformFromConfig Then
-	$oPlatfDefault = _GetPlatfbyName($sPlatformFromConfig)
+	_SetDefaultPlatform(_GetPlatfbyName($sPlatformFromConfig))
 EndIf
+$oPlatfDefault = _GetDefaultPlatform()
 
 $oMainGUI = _MainGUI()
 ; Update platforms Combobox with data
-GUICtrlSetData($oMainGUI("platfCombo"), $sPatforms, $oPlatfDefault("name"))
+GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
 ; Update Platform Info Boxes with data
 _SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 
@@ -41,15 +42,14 @@ While 1
 
 		Case $oMainGUI("platfCombo")
 			If Not $hPCAT Then
-				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
-				$oPlatfDefault = _GetPlatfbyName($sComboRead)
+				$oPlatfDefault = _SetDefaultPlatform(_GetPlatfbyName($sComboRead))
 				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 			Else
 				_MsgBoxPCATRunning($hPCAT)
 				WinActivate($hPCAT)
 				; reset platfComboBox to default platform name
 				GUICtrlSetData($oMainGUI("platfCombo"), "")
-				GUICtrlSetData($oMainGUI("platfCombo"), $sPatforms, $oPlatfDefault("name"))
+				GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
 			EndIf
 		Case $oMainGUI("runButton")
 			; If PCAT is not running, update configs, store options and run PCAT
@@ -118,17 +118,6 @@ Func _GetPCATHandler()
 		Return $hPCAT
 	EndIf
 	Return
-EndFunc
-
-; Find platform object by it's name.
-; If not found, return default platform object
-Func _GetPlatfbyName($sPlatfName)
-	For $i = 0 To UBound($arPlatforms) - 1
-		If $arPlatforms[$i]("name") = $sPlatfName Then
-			Return $arPlatforms[$i]
-		EndIf
-	Next
-	Return $oPlatfDefault
 EndFunc
 
 ; Set Data for GUI Platform Controls
