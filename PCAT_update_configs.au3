@@ -3,55 +3,7 @@
 ; Accepts timeZoone and IP as parameters
 ; Returns None at success, sets @error if fails to update the file.
 
-#include "models/constants.au3"
-
-Func _GetSettings()
-	; Temp array for regExp matches
-	Local $arTemp
-
-	; Check if PCAT config  exists
-	If Not FileExists($CONFPATH) Then
-		Return SetError(1, 1)
-	EndIf
-	; Check if pcSettings exists
-	If Not FileExists($SETTINGSPATH) Then
-		Return SetError(1, 2)
-	EndIf
-
-	; Get IP from pcSettings/jdbc.properties file
-	$sSettings = FileRead($SETTINGSPATH)
-	If @error Then
-		Return SetError(3, 2)
-	EndIf
-	; Set global $sIP variable to the value from jdbc.properties
-	$arTemp = StringRegExp($sSettings, '(?m)^(jdbc.url=jdbc:oracle:thin:@)(.+?):1521:pcat$', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $sIP = $arTemp[1]
-
-	; Get Platform, Login and Password from internal.config file
-	$sConf = FileRead($CONFPATH)
-	If @error Then
-		Return SetError(3, 1)
-	EndIf
-	; Set global $sPlatform variable to the value from internal.config
-	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommDefaultPlatform=)(.*$)', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $sPlatformFromConfig = $arTemp[1]
-
-	; Set global $sLogin and $sPassword variables to the values from internal.config
-	Local $arTemp = StringRegExp($sConf, '(?m)^(#pcCommLogin=)(.*$)', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $sLogin = $arTemp[1]
-
-	If $sLogin Then
-		; Set global $sPassword variable to the value from internal.config
-		$arTemp = StringRegExp($sConf, '(?m)^(#pcCommPassword=)(.*$)', $STR_REGEXPARRAYMATCH)
-		If Not @error Then $sPassword = $arTemp[1]
-	EndIf
-	;ConsoleWrite($sIP & " " & $sLogin & " " & $sPassword & @CRLF)
-
-EndFunc
-
-;_UpdateInternalConf("test", "1.1.1.1")
-
-Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
+Func _UpdateSettings($oPlatfDefault, $oSettings)
 	Local $sConf, $sSettings, $sOutput
 	;ConsoleWrite("running update config...")
 
@@ -81,11 +33,11 @@ Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 	EndIf
 
 	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
-	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $sTimezone & ' ' & $DEFAULTCONF & '"')
+	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $oPlatfDefault("timezone") & ' ' & $DEFAULTCONF & '"')
 	; Remove existing lines with Login And Password and Platform
 	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
 	; Add new lines with Login and Password
-	$sOutput = $sOutput & "#pcCommLogin=" & $sLogin & @CRLF & "#pcCommPassword=" & $sPassword & @CRLF & "#pcCommDefaultPlatform=" & $sPlatform
+	$sOutput = $sOutput & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password") & @CRLF & "#pcCommDefaultPlatform=" & $oPlatfDefault("name")
 
 	; rewriting the file
 	If Not _RewriteFile($CONFPATH, $sOutput) Then
@@ -101,7 +53,7 @@ Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 	EndIf
 
 	; Replace IP with a new value
-	$sOutput = StringRegExpReplace($sSettings, '(?m)^jdbc.url=jdbc:oracle:thin:@.+?:1521:pcat$', 'jdbc.url=jdbc:oracle:thin:@' & $sIP & ':1521:pcat')
+	$sOutput = StringRegExpReplace($sSettings, '(?m)^jdbc.url=jdbc:oracle:thin:@.+?:1521:pcat$', 'jdbc.url=jdbc:oracle:thin:@' & $oPlatfDefault("IP") & ':1521:pcat')
 	;ConsoleWrite($sOutput)
 	; rewriting the file
 	If Not _RewriteFile($SETTINGSPATH, $sOutput) Then

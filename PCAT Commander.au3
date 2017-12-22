@@ -1,22 +1,22 @@
 #include "views/GUI_main.au3"
+#include "models/constants.au3"
 #include "models/platforms.au3"
+#include "models/read_settings.au3"
 #include "PCAT_update_configs.au3"
 
 Local $hPCAT
 Local $sComboRead = ""
-Local $oPlatfDefault
-Local $sPlatfDefaultName
-Local $sPlatfDefaultIP
-Local $sPlatfDefaultTZ
-Local $newTitle
+Local $sNewTitle
+Local $oPlatfDefault = ObjCreate("Scripting.Dictionary")
+Local $oSettings = ObjCreate("Scripting.Dictionary")
 Local $oMainGUI = ObjCreate("Scripting.Dictionary")
 
 ; read the settings
-_GetSettings()
+$oSettings = _ReadSettings()
 ; check and update the default platform object
 ; use the value from config if it exists
-If $sPlatformFromConfig Then
-	_SetDefaultPlatform(_GetPlatfbyName($sPlatformFromConfig))
+If $oSettings("platfname") Then
+	_SetDefaultPlatform(_GetPlatfbyName($oSettings("platfname")))
 EndIf
 $oPlatfDefault = _GetDefaultPlatform()
 
@@ -32,9 +32,9 @@ GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 ; Loop until the user exits.
 While 1
 	$hPCAT = _GetPCATHandler()
-	$newTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
-	If $hPCAT And WinGetTitle($hPCAT) <> $newTitle Then
-		WinSetTitle($hPCAT, "", $newTitle)
+	$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
+	If $hPCAT And WinGetTitle($hPCAT) <> $sNewTitle Then
+		WinSetTitle($hPCAT, "", $sNewTitle)
 	EndIf
 	Switch GUIGetMsg()
 		Case $GUI_EVENT_CLOSE
@@ -56,9 +56,9 @@ While 1
 			; If PCAT is not running, update configs, store options and run PCAT
 			If Not $hPCAT Then
 				; Read the GUI data and store it
-				$sLogin = GUICtrlRead($oMainGUI("loginBox"))
-				If $sLogin Then $sPassword = GUICtrlRead($oMainGUI("passwordBox"))
-				_UpdateInternalConf($oPlatfDefault("timezone"), $oPlatfDefault("IP"), $oPlatfDefault("name"))
+				$oSettings("login") = GUICtrlRead($oMainGUI("loginBox"))
+				If $oSettings("login") Then $oSettings("password") = GUICtrlRead($oMainGUI("passwordBox"))
+				_UpdateSettings($oPlatfDefault, $oSettings)
 				; If error occured on config update, raise an error, continue loop
 				If @error Then
 					_RaiseError(@error, @extended)
@@ -67,7 +67,7 @@ While 1
 
 
 				$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
-				;ConsoleWrite("Login: " & $sLogin  & " Password: " & $sPassword & _
+				;ConsoleWrite("Login: " & $oSettings("login")  & " Password: " & $oSettings("password") & _
 				;				" AutoVersion: " & $iVersion & @CRLF)
 
 				; Run PCAT
@@ -86,7 +86,7 @@ While 1
 				EndIf
 
 				; Try to autologin if Login InputBox is not Empty
-				If $sLogin Then
+				If $oSettings("login") Then
 					_TrayTip("Trying to Login to PCAT", 3)
 					_AutoLogin($hLogin)
 					If $iVersion = 1 Then
@@ -130,8 +130,8 @@ Func _SetPlatfControls($idIPBox, _
 						$sPlatfName = $oPlatfDefault("name"), _
 						$sPlatfIP = $oPlatfDefault("IP"), _
 						$sPlatfTZ = $oPlatfDefault("timezone"), _
-						$sPlatfLogin = $sLogin, _
-						$sPlatfPassword = $sPassword, _
+						$sPlatfLogin = $oSettings("login"), _
+						$sPlatfPassword = $oSettings("password"), _
 						$iPlatfVersion = $iVersion)
 	; Set items for the combobox.
     GUICtrlSetData("", "", $sPlatfName)
@@ -151,7 +151,7 @@ EndFunc
 ; Autologin
 Func _AutoLogin($hLogin)
 	WinActivate($hLogin)
-	Send($sLogin & "{TAB}" & $sPassword & "{ENTER}")
+	Send($oSettings("login") & "{TAB}" & $oSettings("password") & "{ENTER}")
 EndFunc
 
 ; Auto version select
