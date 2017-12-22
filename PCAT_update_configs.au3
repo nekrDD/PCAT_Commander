@@ -3,23 +3,23 @@
 ; Accepts timeZoone and IP as parameters
 ; Returns None at success, sets @error if fails to update the file.
 
-#include "PCAT_data.au3"
+#include "models/constants.au3"
 
 Func _GetSettings()
 	; Temp array for regExp matches
 	Local $arTemp
 
 	; Check if PCAT config  exists
-	If Not FileExists($sConfPath) Then
+	If Not FileExists($CONFPATH) Then
 		Return SetError(1, 1)
 	EndIf
 	; Check if pcSettings exists
-	If Not FileExists($sSettingsPath) Then
+	If Not FileExists($SETTINGSPATH) Then
 		Return SetError(1, 2)
 	EndIf
 
 	; Get IP from pcSettings/jdbc.properties file
-	$sSettings = FileRead($sSettingsPath)
+	$sSettings = FileRead($SETTINGSPATH)
 	If @error Then
 		Return SetError(3, 2)
 	EndIf
@@ -28,7 +28,7 @@ Func _GetSettings()
 	If Not @error Then $sIP = $arTemp[1]
 
 	; Get Platform, Login and Password from internal.config file
-	$sConf = FileRead($sConfPath)
+	$sConf = FileRead($CONFPATH)
 	If @error Then
 		Return SetError(3, 1)
 	EndIf
@@ -56,46 +56,46 @@ Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 	;ConsoleWrite("running update config...")
 
 	; Check if PCAT config  exists
-	If Not FileExists($sConfPath) Then
+	If Not FileExists($CONFPATH) Then
 		Return SetError(1, 1)
 	EndIf
 
 	; Check if pcSettings exists
-	If Not FileExists($sSettingsPath) Then
+	If Not FileExists($SETTINGSPATH) Then
 		Return SetError(1, 2)
 	EndIf
 
 	; Create internal.config and jdbc.properties backups if they don't exist
-	If Not _CreateBackupFile($sConfPath) Then
+	If Not _CreateBackupFile($CONFPATH) Then
 		Return SetError(2, 3)
 	EndIf
 
-	If Not _CreateBackupFile($sSettingsPath) Then
+	If Not _CreateBackupFile($SETTINGSPATH) Then
 		Return SetError(2, 4)
 	EndIf
 
 	; Update internal.config file
-	$sConf = FileRead($sConfPath)
+	$sConf = FileRead($CONFPATH)
 	If @error Then
 		Return SetError(3, 1)
 	EndIf
 
 	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
-	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $sTimezone & ' ' & $sDefaultConf & '"')
+	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $sTimezone & ' ' & $DEFAULTCONF & '"')
 	; Remove existing lines with Login And Password and Platform
 	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
 	; Add new lines with Login and Password
 	$sOutput = $sOutput & "#pcCommLogin=" & $sLogin & @CRLF & "#pcCommPassword=" & $sPassword & @CRLF & "#pcCommDefaultPlatform=" & $sPlatform
 
 	; rewriting the file
-	If Not _RewriteFile($sConfPath, $sOutput) Then
+	If Not _RewriteFile($CONFPATH, $sOutput) Then
 		Return SetError(2, 1)
 	EndIf
 	$sConf = ""
 	$sOutput = ""
 
 	; Update pcSettings/jdbc.properties file
-	$sSettings = FileRead($sSettingsPath)
+	$sSettings = FileRead($SETTINGSPATH)
 	If @error Then
 		Return SetError(3, 2)
 	EndIf
@@ -104,7 +104,7 @@ Func _UpdateInternalConf($sTimezone, $sIP, $sPlatform)
 	$sOutput = StringRegExpReplace($sSettings, '(?m)^jdbc.url=jdbc:oracle:thin:@.+?:1521:pcat$', 'jdbc.url=jdbc:oracle:thin:@' & $sIP & ':1521:pcat')
 	;ConsoleWrite($sOutput)
 	; rewriting the file
-	If Not _RewriteFile($sSettingsPath, $sOutput) Then
+	If Not _RewriteFile($SETTINGSPATH, $sOutput) Then
 		Return SetError(2, 2)
 	EndIf
 	$sConf = ""

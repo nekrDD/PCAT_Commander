@@ -42,6 +42,7 @@ While 1
 
 		Case $oMainGUI("platfCombo")
 			If Not $hPCAT Then
+				$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
 				$oPlatfDefault = _SetDefaultPlatform(_GetPlatfbyName($sComboRead))
 				_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 			Else
@@ -70,7 +71,7 @@ While 1
 				;				" AutoVersion: " & $iVersion & @CRLF)
 
 				; Run PCAT
-				Run($sAppPath)
+				Run($APPPATH)
 				If @error Then
 					_RaiseError(4)
 					ContinueCase
@@ -173,10 +174,10 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 
 	Local $arErrParams[5]
 	$arErrParams[0] = ""
-	$arErrParams[1] = $sConfPath
-	$arErrParams[2] = $sSettingsPath
-	$arErrParams[3] = $sConfPath & ".bkp"
-	$arErrParams[4] = $sSettingsPath & ".bkp"
+	$arErrParams[1] = $CONFPATH
+	$arErrParams[2] = $SETTINGSPATH
+	$arErrParams[3] = $CONFPATH & ".bkp"
+	$arErrParams[4] = $SETTINGSPATH & ".bkp"
 	MsgBox(4112, "PCAT commander error", $arErrors[$iErrorCode] & @CRLF & $arErrParams[$iErrParamCode])
 
 EndFunc
