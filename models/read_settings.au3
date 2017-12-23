@@ -17,14 +17,14 @@ Func _ReadSettings()
 	EndIf
 
 	; Get client.connect.URL from workpoint-client.properties
-	$sFileContents = FileRead($WPCLIENTPATH)
-	If @error Then
-		Return SetError(3, 5)
-	EndIf
+	;$sFileContents = FileRead($WPCLIENTPATH)
+	;If @error Then
+	;	Return SetError(3, 5)
+	;EndIf
 
 	; Set $oSettings connectURL to the value from jdbc.properties
-	$arTemp = StringRegExp($sFileContents, '(?m)^(\s*client.connect.URL\s*=\s*)(.+?)$', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $oSettings("connectURL") = $arTemp[1]
+	;$arTemp = StringRegExp($sFileContents, '(?m)^(\s*client.connect.URL\s*=\s*)(.+?)$', $STR_REGEXPARRAYMATCH)
+	;If Not @error Then $oSettings("connectURL") = $arTemp[1]
 
 	; Get IP from pcSettings/jdbc.properties file
 	$sFileContents = FileRead($SETTINGSPATH)
