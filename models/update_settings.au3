@@ -1,6 +1,7 @@
-; This Function updates jdbc.properties file with relevant IP
-; And internal.conf default_options with relevant -Duser.timezone
-; Accepts timeZoone and IP as parameters
+; This Function updates:
+;	jdbc.properties file with platform's IP
+;	internal.conf default_options with platform's TZ (-Duser.timezone)
+; Accepts default platform and settings objects as parameters
 ; Returns None at success, sets @error if fails to update the file.
 
 Func _UpdateSettings($oPlatfDefault, $oSettings)
@@ -35,9 +36,9 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
 	$sOutput = StringRegExpReplace($sConf, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $oPlatfDefault("timezone") & ' ' & $DEFAULTCONF & '"')
 	; Remove existing lines with Login And Password and Platform
-	$sOutput = StringRegExpReplace($sOutput, '(?m)^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
+	$sOutput = StringRegExpReplace($sOutput, '(?m)\s+^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
 	; Add new lines with Login and Password
-	$sOutput = $sOutput & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password") & @CRLF & "#pcCommDefaultPlatform=" & $oPlatfDefault("name")
+	$sOutput = $sOutput & @CRLF & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password") & @CRLF & "#pcCommDefaultPlatform=" & $oPlatfDefault("name")
 
 	; rewriting the file
 	If Not _RewriteFile($CONFPATH, $sOutput) Then
