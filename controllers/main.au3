@@ -31,7 +31,7 @@ Func _CtrlMain()
 	; Update platforms Combobox with data
 	GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
 	; Update Platform Info Boxes with data
-	_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
+	_SetPlatfControls()
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 	; ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
@@ -70,7 +70,7 @@ Func _CtrlMain()
 				If Not $hPCAT Then
 					$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
 					$oPlatfDefault = _SetDefaultPlatform(_GetPlatfbyName($sComboRead))
-					_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
+					_SetPlatfControls()
 				Else
 					_MsgBoxPCATRunning($hPCAT)
 					WinActivate($hPCAT)
@@ -122,30 +122,21 @@ Func _GetPCATHandler()
 EndFunc
 
 ; Set Data for GUI Platform Controls
-Func _SetPlatfControls($idIPBox, _
-						$idTZBox, _
-						$idLoginBox, _
-						$idPasswordBox, _
-						$idVersionCheckBox, _
-						$sPlatfName = $oPlatfDefault("name"), _
-						$sPlatfIP = $oPlatfDefault("IP"), _
-						$sPlatfTZ = $oPlatfDefault("timezone"), _
-						$sPlatfLogin = $oSettings("login"), _
-						$sPlatfPassword = $oSettings("password"), _
-						$iPlatfVersion = $iVersion)
+Func _SetPlatfControls()
 	; Set items for the combobox.
-    GUICtrlSetData("", "", $sPlatfName)
+    GUICtrlSetData("", "", $oPlatfDefault("name"))
 
 	; Set InputBoxes Data
-	GUICtrlSetData($idIPBox, $sPlatfIP)
-	GUICtrlSetData($idTZBox, $sPlatfTZ)
+	GUICtrlSetData($oMainGUI("ipBox"), $oPlatfDefault("IP"))
+	GUICtrlSetData($oMainGUI("tzBox"), $oPlatfDefault("timezone"))
+	GUICtrlSetData($oMainGUI("upmIPBox"), $oPlatfDefault("UPM_IP"))
 
 	; Set Login and Password Data
-	GUICtrlSetData($idLoginBox, $sPlatfLogin)
-	GUICtrlSetData($idPasswordBox, $sPlatfPassword)
+	GUICtrlSetData($oMainGUI("loginBox"),  $oSettings("login"))
+	GUICtrlSetData($oMainGUI("passwordBox"), $oSettings("password"))
 
 	; Set Autoversion Checkbox
-	GUICtrlSetState($idVersionCheckBox, $iPlatfVersion)
+	GUICtrlSetState($oMainGUI("versionCheckBox"), $iVersion)
 EndFunc
 
 ; Autologin
