@@ -5,6 +5,8 @@
 #include "../models/update_settings.au3"
 
 Local $hPCAT
+Local $sTitle
+Local $iPID
 Local $sComboRead = ""
 Local $sNewTitle
 Local $oPlatfDefault = ObjCreate("Scripting.Dictionary")
@@ -12,6 +14,9 @@ Local $oSettings = ObjCreate("Scripting.Dictionary")
 Local $oMainGUI = ObjCreate("Scripting.Dictionary")
 
 Func _CtrlMain()
+	Local $iPID = 0
+	Local $bLoginAttempted = False
+	Local $bSelectVerAttempted = False
 	; read the settings from config files
 	$oSettings = _ReadSettings()
 
@@ -29,14 +34,35 @@ Func _CtrlMain()
 	_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
-
+	ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
 	; Loop until the user exits.
 	While 1
+		; Get PCAT window handler
 		$hPCAT = _GetPCATHandler()
 		$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
-		If $hPCAT And WinGetTitle($hPCAT) <> $sNewTitle Then
-			WinSetTitle($hPCAT, "", $sNewTitle)
+		If $hPCAT Then
+			$sTitle = WinGetTitle($hPCAT)
+			; ConsoleWrite($sTitle & @CRLF)
+			Switch $sTitle
+				Case "Login"
+					;ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
+					; Try to autologin if Login InputBox is not Empty
+					If $oSettings("login") And Not $bLoginAttempted Then
+						_TrayTip("Trying to Login to PCAT", 3)
+						_AutoLogin($hPCAT)
+						$bLoginAttempted = True
+					EndIf
+				Case "Select Reseller Version"
+					If $iVersion = 1 And Not $bSelectVerAttempted Then
+						_TrayTip("Selecting the Latest version", 2)
+						_AutoVersion($hPCAT)
+						$bSelectVerAttempted = True
+					EndIf
+				Case Not $sNewTitle
+					WinSetTitle($hPCAT, "", $sNewTitle)
+			EndSwitch
 		EndIf
+
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE
 				ExitLoop
@@ -66,41 +92,19 @@ Func _CtrlMain()
 					EndIf
 					$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
 					; Run PCAT
-					Run($APPPATH)
+					$bLoginAttempted = False
+					$bSelectVerAttempted = False
+					$iPID = Run($APPPATH)
+					ConsoleWrite("PID: " & $iPID & @CRLF)
+					; ConsoleWrite("LoginAttempted " & $bLoginAttempted  & @CRLF)
 					If @error Then
 						_RaiseError(4)
 						ContinueCase
-					EndIf
-					; Wait for PCAT Login window
-					_TrayTip("Waiting for PCAT Login Window", 30)
-					Local $hLogin = WinWait("[TITLE:Login; CLASS:SunAwtDialog]", "", 30)
-					If Not $hLogin Then
-						_RaiseError(5)
-						ContinueCase
-					EndIf
-
-					; Try to autologin if Login InputBox is not Empty
-					If $oSettings("login") Then
-						_TrayTip("Trying to Login to PCAT", 3)
-						_AutoLogin($hLogin)
-						If $iVersion = 1 Then
-							; Wait for PCAT "Select Reseller Version" Window
-							_TrayTip("Waiting for PCAT Select Reseller Version Window", 30)
-							Local $hVersion = WinWait("[TITLE:Select Reseller Version; CLASS:SunAwtDialog]", "", 30)
-							If Not $hVersion Then
-								;_RaiseError(6)
-								_TrayTip("Timeout in waiting for Select Version Window", 3, 3)
-								ContinueCase
-							EndIf
-							_TrayTip("Selecting the Latest version", 2)
-							_AutoVersion($hVersion)
-						EndIf
 					EndIf
 				Else
 					_MsgBoxPCATRunning($hPCAT)
 					WinActivate($hPCAT)
 				EndIf
-
 		EndSwitch
 	WEnd
 
