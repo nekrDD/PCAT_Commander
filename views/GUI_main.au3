@@ -37,7 +37,7 @@ Func _MainGUI()
 EndFunc
 
 Func _MsgBoxPCATRunning($hPCAT)
-	MsgBox(4144,"PCAT commander info", WinGetTitle($hPCAT) & " is already running!")
+	MsgBox(4144,"PCAT commander info", 'PCAT "' & WinGetTitle($hPCAT) & '" is already running!')
 EndFunc
 
 Func _TrayTip($sMessage, $iTimeout, $sTipType=1)
