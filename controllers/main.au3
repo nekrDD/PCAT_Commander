@@ -34,7 +34,7 @@ Func _CtrlMain()
 	_SetPlatfControls($oMainGUI("ipBox"), $oMainGUI("tzBox"), $oMainGUI("loginBox"), $oMainGUI("passwordBox"), $oMainGUI("versionCheckBox"))
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
-	ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
+	; ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
 	; Loop until the user exits.
 	While 1
 		; Get PCAT window handler
@@ -58,7 +58,7 @@ Func _CtrlMain()
 						_AutoVersion($hPCAT)
 						$bSelectVerAttempted = True
 					EndIf
-				Case Not $sNewTitle
+				Case "Product Catalog"
 					WinSetTitle($hPCAT, "", $sNewTitle)
 			EndSwitch
 		EndIf
@@ -79,8 +79,9 @@ Func _CtrlMain()
 					GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
 				EndIf
 			Case $oMainGUI("runButton")
+				$hPCAT = _GetPCATHandler()
 				; If PCAT is not running, update configs, store options and run PCAT
-				If Not $hPCAT Then
+				If Not $hPCAT and Not ProcessExists($iPID) Then
 					; Read the GUI data and store it
 					$oSettings("login") = GUICtrlRead($oMainGUI("loginBox"))
 					If $oSettings("login") Then $oSettings("password") = GUICtrlRead($oMainGUI("passwordBox"))
