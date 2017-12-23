@@ -171,12 +171,15 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 					"Try to close some programs and try again"
 	$arErrors[6] = "Timeout in waiting for PCAT Select Reseller Version window."
 
-	Local $arErrParams[5]
+	Local $arErrParams[7]
 	$arErrParams[0] = ""
 	$arErrParams[1] = $CONFPATH
 	$arErrParams[2] = $SETTINGSPATH
 	$arErrParams[3] = $CONFPATH & ".bkp"
 	$arErrParams[4] = $SETTINGSPATH & ".bkp"
+	$arErrParams[5] = $WPCLIENTPATH
+	$arErrParams[6] = $WPCLIENTPATH & ".bkp"
+
 	MsgBox(4112, "PCAT commander error", $arErrors[$iErrorCode] & @CRLF & $arErrParams[$iErrParamCode])
 
 EndFunc
