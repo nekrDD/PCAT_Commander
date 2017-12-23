@@ -13,5 +13,12 @@ Func _TrayTip()
 	TrayTip("My Title", "TEST", 15)
 EndFunc
 
-_TrayTip()
-
+;TrayTip()
+$iTest = 0
+Switch $iTest
+	Case 0
+		ConsoleWrite("1")
+	Case 0
+		ConsoleWrite("2")
+EndSwitch
+;If $iTest Then ConsoleWrite ("Ok")
