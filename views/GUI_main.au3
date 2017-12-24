@@ -10,31 +10,31 @@ Func _MainGUI()
     $oMainGUI("mainWindow") = GUICreate("PCAT Commander", 210, 220)
 	GUISetIcon("pccomm.ico")
 	; Create a label for Combobox
-	$oMainGUI("platfLabel") = GUICtrlCreateLabel("Platform:", 10, 10)
+	$oMainGUI("platfLabel") = GUICtrlCreateLabel("Platform:", 23, 12)
     ; Create a combobox control.
     $oMainGUI("platfCombo") = GUICtrlCreateCombo("", 70, 10, 120, 30, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	; Create a label for IP
-	$oMainGUI("ipLabel") = GUICtrlCreateLabel("IP address:", 10, 40)
+	$oMainGUI("ipLabel") = GUICtrlCreateLabel("SDP IP:", 26, 42)
 	; Create a inputBox for IP address
 	$oMainGUI("ipBox") = GUICtrlCreateInput("IP address", 70, 40, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
-	; Create a label for TimeZone
-	$oMainGUI("tzLabel") = GUICtrlCreateLabel("Timezone:", 10, 60)
-	; Create a InputBox for Timezone value
-	$oMainGUI("tzBox") = GUICtrlCreateInput("Timezone", 70, 60, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
 	; Create a label for UPM IP
-	$oMainGUI("upmIPLabel") = GUICtrlCreateLabel("UPM IP:", 10, 80)
+	$oMainGUI("upmIPLabel") = GUICtrlCreateLabel("UPM IP:", 24, 63)
 	; Create a inputBox for UPM IP value
-	$oMainGUI("upmIPBox") = GUICtrlCreateInput("UPM IP", 70, 80, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
+	$oMainGUI("upmIPBox") = GUICtrlCreateInput("UPM IP", 70, 60, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
+	; Create a label for TimeZone
+	$oMainGUI("tzLabel") = GUICtrlCreateLabel("Timezone:", 15, 82)
+	; Create a InputBox for Timezone value
+	$oMainGUI("tzBox") = GUICtrlCreateInput("Timezone", 70, 80, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT,$ES_READONLY))
 	; Create a label for Login
-	$oMainGUI("loginLabel") = GUICtrlCreateLabel("Login:", 10, 110)
+	$oMainGUI("loginLabel") = GUICtrlCreateLabel("Login:", 33, 112)
 	; Create an inputBox for Login
 	$oMainGUI("loginBox") = GUICtrlCreateInput("", 70, 110, 120, 20)
 	; Create a label for Password
-	$oMainGUI("passwordLabel") = GUICtrlCreateLabel("Password:", 10, 130)
+	$oMainGUI("passwordLabel") = GUICtrlCreateLabel("Password:", 15, 132)
 	; Create an inputBox for Password
 	$oMainGUI("passwordBox") = GUICtrlCreateInput("", 70, 130, 120, 20, BitOR($GUI_SS_DEFAULT_INPUT, $ES_PASSWORD))
 	; Create Auto Select Latest Version checkBox
-	$oMainGUI("versionCheckBox") = GUICtrlCreateCheckbox("Auto select the latest version", 10, 160, $ES_READONLY)
+	$oMainGUI("versionCheckBox") = GUICtrlCreateCheckbox("Auto select the latest version", 32, 160, $ES_READONLY)
 	; Create a Run button
 	$oMainGUI("runButton") = GUICtrlCreateButton("Run PCAT", 110, 190, 85, 25)
 	return $oMainGUI
