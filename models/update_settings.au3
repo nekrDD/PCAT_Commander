@@ -60,7 +60,7 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 	; Remove existing lines with Login And Password and Platform
 	$sNewContents = StringRegExpReplace($sNewContents, '(?m)\s+^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
 	; Add new lines with Login and Password
-	$sNewContents = $sNewContents & @CRLF & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password") & @CRLF & "#pcCommDefaultPlatform=" & $oPlatfDefault("name")
+	$sNewContents = $sNewContents & @CRLF & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password")
 
 	; rewriting the file
 	If Not _RewriteFile($CONFPATH, $sNewContents) Then
