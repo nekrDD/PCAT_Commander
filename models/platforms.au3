@@ -82,11 +82,22 @@ Func _SetDefaultPlatform($oNewPlatfDefault)
 	Return $oPlatfDefault
 EndFunc
 
-; Find platform object by it's name.
+; Find platform object by requested name.
 ; If not found, return default platform object
 Func _GetPlatfbyName($sPlatfName)
 	For $i = 0 To UBound($arPlatforms) - 1
 		If $arPlatforms[$i]("name") = $sPlatfName Then
+			Return $arPlatforms[$i]
+		EndIf
+	Next
+	Return $oPlatfDefault
+EndFunc
+
+; Find platform object by IP.
+; If not found, return default platform object
+Func _GetPlatfbyName($sPlatfIP)
+	For $i = 0 To UBound($arPlatforms) - 1
+		If $arPlatforms[$i]("IP") = $sPlatfIP Then
 			Return $arPlatforms[$i]
 		EndIf
 	Next
