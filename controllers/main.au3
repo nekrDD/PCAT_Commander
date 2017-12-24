@@ -3,18 +3,18 @@
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
 #include "../models/update_settings.au3"
+#include "check_connectURL.au3"
 
-Local $hPCAT
-Local $sTitle
-Local $iPID
-Local $sComboRead = ""
-Local $sNewTitle
-Local $oPlatfDefault = ObjCreate("Scripting.Dictionary")
-Local $oSettings = ObjCreate("Scripting.Dictionary")
-Local $oMainGUI = ObjCreate("Scripting.Dictionary")
+Local $hPCAT 	; Product Catalog window handler
+Local $sTitle 	; Product Catalog window Title
+Local $sComboRead = "" ; Platform name ComboBox value
+Local $sNewTitle	; new title for Product Catalog window
+Local $oPlatfDefault = ObjCreate("Scripting.Dictionary") ; Default Platform object (name, IP, timezone, UPM_IP)
+Local $oSettings = ObjCreate("Scripting.Dictionary")	; Settings object
+Local $oMainGUI = ObjCreate("Scripting.Dictionary")		; Main GUI elements object
 
 Func _CtrlMain()
-	Local $iPID = 0
+	Local $iPID = 0 ; Product Catalog Process ID
 	Local $bLoginAttempted = False
 	Local $bSelectVerAttempted = False
 	; read the settings from config files
@@ -108,7 +108,7 @@ Func _CtrlMain()
 		EndSwitch
 	WEnd
 
-	; Delete the previous GUI and all controls.
+	; Delete the GUI and all controls.
 	GUIDelete($oMainGUI("mainWindow"))
 EndFunc
 
