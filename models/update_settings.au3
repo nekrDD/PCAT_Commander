@@ -57,8 +57,8 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 
 	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
 	$sNewContents = StringRegExpReplace($sFileContents, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $oPlatfDefault("timezone") & ' ' & $DEFAULTCONF & '"')
-	; Remove existing lines with Login And Password and Platform
-	$sNewContents = StringRegExpReplace($sNewContents, '(?m)\s+^#pcCommLogin=.*\s+#pcCommPassword=.*\s+#pcCommDefaultPlatform=.*?$', '')
+	; Remove existing lines for #pcComm settings
+	$sNewContents = StringRegExpReplace($sNewContents, '(?m)(\s+^#pcComm.*$)*', '')
 	; Add new lines with Login and Password
 	$sNewContents = $sNewContents & @CRLF & "#pcCommLogin=" & $oSettings("login") & @CRLF & "#pcCommPassword=" & $oSettings("password")
 
