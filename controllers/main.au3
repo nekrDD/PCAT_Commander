@@ -22,8 +22,8 @@ Func _CtrlMain()
 
 	; check and update the default platform object
 	; use the value from config if it exists
-	If $oSettings("platfname") Then
-		_SetDefaultPlatform(_GetPlatfbyName($oSettings("platfname")))
+	If $oSettings("ip") Then
+		_SetDefaultPlatform(_GetPlatfbyIP($oSettings("ip")))
 	EndIf
 	$oPlatfDefault = _GetDefaultPlatform()
 	; create app main window
@@ -39,14 +39,12 @@ Func _CtrlMain()
 	While 1
 		; Get PCAT window handler
 		$hPCAT = _GetPCATHandler()
-		$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 		If $hPCAT Then
 			$sTitle = WinGetTitle($hPCAT)
 			; ConsoleWrite($sTitle & @CRLF)
 			Switch $sTitle
 				Case "Login"
-					;ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
-					; Try to autologin if Login InputBox is not Empty
+					; Try to autologin if Login InputBox is not Empty and no Login attempts have been made
 					If $oSettings("login") And Not $bLoginAttempted Then
 						_TrayTip("Trying to Login to PCAT", 3)
 						_AutoLogin($hPCAT)
@@ -59,6 +57,7 @@ Func _CtrlMain()
 						$bSelectVerAttempted = True
 					EndIf
 				Case "Product Catalog"
+					$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 					WinSetTitle($hPCAT, "", $sNewTitle)
 			EndSwitch
 		EndIf

@@ -95,7 +95,7 @@ EndFunc
 
 ; Find platform object by IP.
 ; If not found, return default platform object
-Func _GetPlatfbyName($sPlatfIP)
+Func _GetPlatfbyIP($sPlatfIP)
 	For $i = 0 To UBound($arPlatforms) - 1
 		If $arPlatforms[$i]("IP") = $sPlatfIP Then
 			Return $arPlatforms[$i]
