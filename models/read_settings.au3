@@ -41,11 +41,8 @@ Func _ReadSettings()
 	If @error Then
 		Return SetError(3, 1)
 	EndIf
-	; Set global $sPlatform variable to the value from internal.config
-	Local $arTemp = StringRegExp($sFileContents, '(?m)^(#pcCommDefaultPlatform=)(.*$)', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $oSettings("platfname") = $arTemp[1]
 
-	; Set global $sLogin and $sPassword variables to the values from internal.config
+	; Set global Login and Password Settings to the values from internal.config
 	Local $arTemp = StringRegExp($sFileContents, '(?m)^(#pcCommLogin=)(.*$)', $STR_REGEXPARRAYMATCH)
 	If Not @error Then $oSettings("login") = $arTemp[1]
 
