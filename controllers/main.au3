@@ -1,5 +1,5 @@
-#include "../views/GUI_main.au3"
 #include "../models/constants.au3"
+#include "../views/GUI_main.au3"
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
 #include "../models/update_settings.au3"
@@ -15,6 +15,7 @@ Local $oMainGUI = ObjCreate("Scripting.Dictionary")		; Main GUI elements object
 
 Func _CtrlMain()
 	Local $iPID = 0 ; Product Catalog Process ID
+	Local $hConnectURL ; client.connect.URL request handler
 	Local $bLoginAttempted = False
 	Local $bSelectVerAttempted = False
 	; read the settings from config files
@@ -59,6 +60,13 @@ Func _CtrlMain()
 				Case "Product Catalog"
 					$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 					WinSetTitle($hPCAT, "", $sNewTitle)
+				Case $sNewTitle
+					If $hConnectURL Then
+						If _GetResponseURL($hConnectURL)==False Then
+							_MsgBoxPropagateRestricted($oPlatfDefault("UPM_IP"))
+							$hConnectURL = ''
+						EndIf
+					EndIf
 			EndSwitch
 		EndIf
 
@@ -95,12 +103,13 @@ Func _CtrlMain()
 					$bLoginAttempted = False
 					$bSelectVerAttempted = False
 					$iPID = Run($APPPATH)
-					ConsoleWrite("PID: " & $iPID & @CRLF)
+					; ConsoleWrite("PID: " & $iPID & @CRLF)
 					; ConsoleWrite("LoginAttempted " & $bLoginAttempted  & @CRLF)
 					If @error Then
 						_RaiseError(4)
 						ContinueCase
 					EndIf
+					$hConnectURL = _SendRequestConnectURL($oPlatfDefault("UPM_IP"))
 				Else
 					_MsgBoxPCATRunning($hPCAT)
 					WinActivate($hPCAT)

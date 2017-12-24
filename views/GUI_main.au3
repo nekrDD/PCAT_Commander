@@ -44,6 +44,15 @@ Func _MsgBoxPCATRunning($hPCAT)
 	MsgBox(4144,"PCAT commander info", 'PCAT "' & WinGetTitle($hPCAT) & '" is already running!')
 EndFunc
 
+Func _MsgBoxPropagateRestricted($sFailedURL)
+	$sFailedURL = StringReplace($CLIENTURL, "{{UPM_IP}}", $sFailedURL)
+	MsgBox(4144,"PCAT commander info", 'WARNING!!!' & @CRLF & 'DO NOT PROPAGATE IN THIS PCAT SESSION!' & @CRLF & _
+					'The "client.connect.URL = ' & $sFailedURL & '" failed to load.' & @CRLF & _
+					'It means that probably propagation job will not start.' & @CRLF & _
+					'Check that UPM is alive and "workpoint-client.properties" file manualy.' & @CRLF & _
+					'Meantime, you may perform the changes in PCAT safely.')
+EndFunc
+
 Func _TrayTip($sMessage, $iTimeout, $sTipType=1)
 	Const $TITLE = "PCAT Commander"
 	TrayTip($TITLE, $sMessage, $iTimeout, $sTipType)
