@@ -164,8 +164,8 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	Local $arErrors[7]
 	$arErrors[0] = ""
 	$arErrors[1] = "File not found"
-	$arErrors[2] = "Could not write file"
-	$arErrors[3] = "Could not read file"
+	$arErrors[2] = "Could not write file. Probably java.exe process is blocking it, or you don't have Admin permissions."
+	$arErrors[3] = "Could not read file."
 	$arErrors[4] = "Could not start PCAT. Check PCAT log for details."
 	$arErrors[5] = "Timeout in waiting for PCAT Login window." & @CRLF & _
 					"Try to close some programs and try again"
