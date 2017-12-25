@@ -2,9 +2,9 @@
 
 Global Const $APPVERSION = "1.1"
 
-Local Const $APPDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
+Local Const $PCATDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
 
-Global Const $APPPATH = _PathFull("internal\bin\Product Catalog.exe", $APPDIR)
+Global Const $PCATPATH = _PathFull("internal\bin\Product Catalog.exe", $APPDIR)
 Global Const $CONFPATH = _PathFull("internal\etc\internal.conf", $APPDIR)
 Global Const $SETTINGSPATH = _PathFull("pcSettings\jdbc.properties", @UserProfileDir)
 Global Const $WPCLIENTPATH = _PathFull("pcSettings\workpoint-client.properties", @UserProfileDir)
