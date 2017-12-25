@@ -66,7 +66,7 @@ Func _CtrlMain()
 					If $hConnectURL Then
 						If _GetResponseURL($hConnectURL)==False Then
 							_MsgBoxPropagateRestricted($oPlatfDefault("UPM_IP"))
-							$hConnectURL = ''
+							InetClose($hConnectURL)
 						EndIf
 					EndIf
 			EndSwitch
