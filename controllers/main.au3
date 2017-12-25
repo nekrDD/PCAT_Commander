@@ -18,6 +18,7 @@ Func _CtrlMain()
 	Local $hConnectURL ; client.connect.URL request handler
 	Local $bLoginAttempted = False
 	Local $bSelectVerAttempted = False
+
 	; read the settings from config files
 	$oSettings = _ReadSettings()
 
@@ -52,7 +53,7 @@ Func _CtrlMain()
 						$bLoginAttempted = True
 					EndIf
 				Case "Select Reseller Version"
-					If $iVersion = 1 And Not $bSelectVerAttempted Then
+					If $oSettings("selectVersion") = 1 And Not $bSelectVerAttempted Then
 						_TrayTip("Selecting the Latest version", 2)
 						_AutoVersion($hPCAT)
 						$bSelectVerAttempted = True
@@ -61,6 +62,7 @@ Func _CtrlMain()
 					$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
 					WinSetTitle($hPCAT, "", $sNewTitle)
 				Case $sNewTitle
+					; Check UPM client.connect.URL status and display error if it's not ok
 					If $hConnectURL Then
 						If _GetResponseURL($hConnectURL)==False Then
 							_MsgBoxPropagateRestricted($oPlatfDefault("UPM_IP"))
@@ -98,7 +100,7 @@ Func _CtrlMain()
 						_RaiseError(@error, @extended)
 						ContinueCase
 					EndIf
-					$iVersion = GUICtrlRead($oMainGUI("versionCheckBox"))
+					$oSettings("selectVersion") = GUICtrlRead($oMainGUI("versionCheckBox"))
 					; Run PCAT
 					$bLoginAttempted = False
 					$bSelectVerAttempted = False
@@ -144,7 +146,7 @@ Func _SetPlatfControls()
 	GUICtrlSetData($oMainGUI("passwordBox"), $oSettings("password"))
 
 	; Set Autoversion Checkbox
-	GUICtrlSetState($oMainGUI("versionCheckBox"), $iVersion)
+	GUICtrlSetState($oMainGUI("versionCheckBox"), $oSettings("selectVersion"))
 EndFunc
 
 ; Autologin

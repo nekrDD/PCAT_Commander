@@ -1,4 +1,5 @@
 #include <File.au3>
+Global $APPVERSION = "1.1"
 Global $iVersion
 Local Const $APPDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
 Global Const $APPPATH = _PathFull("internal\bin\Product Catalog.exe", $APPDIR)

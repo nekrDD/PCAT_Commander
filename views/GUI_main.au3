@@ -7,7 +7,7 @@
 Func _MainGUI()
 	Local $oMainGUI = ObjCreate("Scripting.Dictionary")
     ; Create a GUI
-    $oMainGUI("mainWindow") = GUICreate("PCAT Commander", 210, 220)
+    $oMainGUI("mainWindow") = GUICreate("PCAT Commander v" & $APPVERSION, 210, 220)
 	GUISetIcon("pccomm.ico")
 	; Create a label for Combobox
 	$oMainGUI("platfLabel") = GUICtrlCreateLabel("Platform:", 23, 12)

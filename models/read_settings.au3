@@ -1,5 +1,6 @@
 Func _ReadSettings()
 	Local $oSettings = ObjCreate("Scripting.Dictionary")
+	$oSettings("selectVersion") = 1 ; hardcoded autoselect version option
 	; Temp array for regExp matches
 	Local $arTemp, $sFileContents
 
