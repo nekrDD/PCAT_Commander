@@ -104,7 +104,7 @@ Func _CtrlMain()
 					; Run PCAT
 					$bLoginAttempted = False
 					$bSelectVerAttempted = False
-					$iPID = Run($APPPATH)
+					$iPID = Run($PCATPATH)
 					; ConsoleWrite("PID: " & $iPID & @CRLF)
 					; ConsoleWrite("LoginAttempted " & $bLoginAttempted  & @CRLF)
 					If @error Then
