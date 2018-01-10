@@ -56,7 +56,7 @@ $arPlatforms[9]("IP") = "192.168.91.154"
 $arPlatforms[9]("timezone") = "GMT+3"
 $arPlatforms[9]("UPM_IP") = "192.168.112.49"
 
-$arPlatforms[10]("name") = "JUPITER"
+$arPlatforms[10]("name") = "YUPITER"
 $arPlatforms[10]("IP") = "172.21.30.150"
 $arPlatforms[10]("timezone") = "GMT+3"
 $arPlatforms[10]("UPM_IP") = "172.21.30.160"
