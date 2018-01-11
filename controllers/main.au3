@@ -152,7 +152,21 @@ EndFunc
 ; Autologin
 Func _AutoLogin($hLogin)
 	WinActivate($hLogin)
-	Send($oSettings("login") & "{TAB}" & $oSettings("password") & "{ENTER}")
+	ConsoleWrite("login/password: " & $oSettings("login") & $oSettings("password") & @CRLF)
+	_SendEx($oSettings("login"))
+	Send("{TAB}")
+	_SendEx($oSettings("password"))
+	Send("{ENTER}")
+EndFunc
+
+
+; Bugfix for Send (cyrillic symbols are not sent properly)
+Func _SendEx($sString)
+    Local $sOld_Clip = ClipGet()
+    ClipPut($sString)
+    Sleep(10)
+    Send("+{INSERT}")
+    ClipPut($sOld_Clip)
 EndFunc
 
 ; Auto version select
