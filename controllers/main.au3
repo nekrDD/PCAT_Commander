@@ -34,6 +34,8 @@ Func _CtrlMain()
 	GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
 	; Update Platform Info Boxes with data
 	_SetPlatfControls()
+	; Set tray behaviour
+	_SetTray()
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 	; ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
@@ -153,9 +155,9 @@ EndFunc
 Func _AutoLogin($hLogin)
 	WinActivate($hLogin)
 	ConsoleWrite("login/password: " & $oSettings("login") & $oSettings("password") & @CRLF)
-	_SendEx($oSettings("login"))
+	Send($oSettings("login"), 1)
 	Send("{TAB}")
-	_SendEx($oSettings("password"))
+	Send($oSettings("password"), 1)
 	Send("{ENTER}")
 EndFunc
 
