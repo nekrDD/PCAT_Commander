@@ -44,3 +44,5 @@ security.server.ip in the security file.properties is not changing!*
 ### Change Log
 * 1.2 :
 	* Bugfix for autologin feature: special symbols were not sent to PCAT login
+* 1.2.1 :
+	* Remove using clipboard from autologin feature
