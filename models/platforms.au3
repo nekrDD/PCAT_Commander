@@ -38,7 +38,7 @@ $arPlatforms[5]("UPM_IP") = "172.26.132.67"
 
 $arPlatforms[6]("name") = "EKT"
 $arPlatforms[6]("IP") = "10.127.130.120"
-$arPlatforms[6]("timezone") = "GMT+2"
+$arPlatforms[6]("timezone") = "GMT+5"
 $arPlatforms[6]("UPM_IP") = "10.127.130.90"
 
 $arPlatforms[7]("name") = "RST"
