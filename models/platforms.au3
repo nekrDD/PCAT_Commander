@@ -42,7 +42,7 @@ $arPlatforms[6]("timezone") = "GMT+5"
 $arPlatforms[6]("UPM_IP") = "10.127.130.90"
 
 $arPlatforms[7]("name") = "RST"
-$arPlatforms[7]("IP") = "172.26.35.125"
+$arPlatforms[7]("IP") = "172.26.35.127"
 $arPlatforms[7]("timezone") = "GMT+3"
 $arPlatforms[7]("UPM_IP") = "172.26.35.24"
 
