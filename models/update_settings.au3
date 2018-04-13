@@ -28,14 +28,23 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 		Return SetError(2, 6)
 	EndIf
 
+	If Not _CreateBackupFile($CONFPATH) Then
+		Return SetError(2, 6)
+	EndIf
+
 	If Not _CreateBackupFile($SETTINGSPATH) Then
 		Return SetError(2, 4)
 	EndIf
 
-	; Update  workpoint-client.properties
+	; Read  workpoint-client.properties
 	$sFileContents = FileRead($WPCLIENTPATH)
 	If @error Then
 		Return SetError(3, 5)
+	EndIf
+
+	; Check that `client.connect.URL=` string exists in $sFileContents
+	If Not StringRegExp($sFileContents, '(?m)^\s*client.connect.URL\s*=\s*http://.*$') Then
+		Return SetError(9, 5)
 	EndIf
 
 	; Replace UPM IP with a new value
@@ -49,14 +58,20 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 	$sFileContents = ""
 	$sNewContents = ""
 
-	; Update internal.config file
+	; Read internal.config file
 	$sFileContents = FileRead($CONFPATH)
 	If @error Then
 		Return SetError(3, 1)
 	EndIf
 
-	; Replace default_options with new value for -Duser.timezone  and pre-defined recommended java options
-	$sNewContents = StringRegExpReplace($sFileContents, '(?m)^default_options=".*"$', 'default_options="-J-Duser.timezone=' & $oPlatfDefault("timezone") & ' ' & $DEFAULTCONF & '"')
+	; Check that default_options string exists in $sFileContents
+	If Not StringRegExp($sFileContents, '(?m)^default_options=\s*".*"\s*$') Then
+		Return SetError(7, 1)
+	EndIf
+
+	; Update timezone settings in default_options
+	$sNewContents = StringRegExpReplace($sFileContents, '-J-Duser.timezone=.*?\s+', '') ; remove all timezone settings from the file
+	$sNewContents = StringRegExpReplace($sNewContents, '(?m)^default_options=\s*"(.*)"$', 'default_options="-J-Duser.timezone=' & $oPlatfDefault("timezone") & ' $1"')
 	; Remove existing lines for #pcComm settings
 	$sNewContents = StringRegExpReplace($sNewContents, '(?m)(\s+^#pcComm.*$)*', '')
 	; Add new lines with Login and Password
@@ -69,10 +84,15 @@ Func _UpdateSettings($oPlatfDefault, $oSettings)
 	$sFileContents = ""
 	$sNewContents = ""
 
-	; Update pcSettings/jdbc.properties file
+	; Read pcSettings/jdbc.properties file
 	$sFileContents = FileRead($SETTINGSPATH)
 	If @error Then
 		Return SetError(3, 2)
+	EndIf
+
+	; Check that `jdbc.url=` string exists in $sFileContents
+	If Not StringRegExp($sFileContents, '(?m)^jdbc.url=jdbc:oracle:thin:@.+?:1521:pcat$') Then
+		Return SetError(8, 2)
 	EndIf
 
 	; Replace IP with a new value

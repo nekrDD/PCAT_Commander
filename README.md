@@ -46,3 +46,9 @@ security.server.ip in the security file.properties is not changing!*
 	* Bugfix for autologin feature: special symbols were not sent to PCAT login
 * 1.2.1 :
 	* Remove using clipboard from autologin feature
+* 1.2.2 :
+	* Fix timezone for EKT
+* 1.2.3 :
+	* Fix SDP_IP for RST
+	* The `default_options=` string is now updating with platform timezone only (in previous versions the whole string replacement took place with the recommended parameters by vendor).
+	* Add the string validation in configs before update

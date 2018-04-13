@@ -179,7 +179,7 @@ EndFunc
 
 Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	ConsoleWrite("Error code: " & $iErrorCode & "ErrParamCode: " & $iErrParamCode)
-	Local $arErrors[7]
+	Local $arErrors[10]
 	$arErrors[0] = ""
 	$arErrors[1] = "File not found"
 	$arErrors[2] = "Could not write file. Probably java.exe process is blocking it, or you don't have Admin permissions."
@@ -188,6 +188,9 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	$arErrors[5] = "Timeout in waiting for PCAT Login window." & @CRLF & _
 					"Try to close some programs and try again"
 	$arErrors[6] = "Timeout in waiting for PCAT Select Reseller Version window."
+	$arErrors[7] = "Error reading internal.conf file, couldn't find properly formatted `default_options=""...""` string."
+	$arErrors[8] = "Error reading jdbc.properties file, couldn't find properly formatted `jdbc.url=""...""` string."
+	$arErrors[9] = "Error reading workpoint-client.properties file, couldn't find properly formatted `client.connect.URL=""...""` string."
 
 	Local $arErrParams[7]
 	$arErrParams[0] = ""
