@@ -1,5 +1,6 @@
+Local $oSettings = ObjCreate("Scripting.Dictionary")
 Func _ReadSettings()
-	Local $oSettings = ObjCreate("Scripting.Dictionary")
+
 	$oSettings("selectVersion") = 1 ; hardcoded autoselect version option
 	; Temp array for regExp matches
 	Local $arTemp, $sFileContents
@@ -53,6 +54,6 @@ Func _ReadSettings()
 		If Not @error Then $oSettings("password") = $arTemp[1]
 	EndIf
 	; ConsoleWrite($oSettings("connectURL") & @CRLF)
-	Return $oSettings
+	;Return $oSettings
 
 EndFunc

@@ -3,6 +3,8 @@
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
 #include "../models/update_settings.au3"
+#include "../controllers/win_PCAT_proc.au3"
+;#include "../models/pcat_props.au3"
 #include "check_connectURL.au3"
 
 Local $hPCAT 	; Product Catalog window handler
@@ -10,17 +12,18 @@ Local $sTitle 	; Product Catalog window Title
 Local $sComboRead = "" ; Platform name ComboBox value
 Local $sNewTitle	; new title for Product Catalog window
 Local $oPlatfDefault = ObjCreate("Scripting.Dictionary") ; Default Platform object (name, IP, timezone, UPM_IP)
-Local $oSettings = ObjCreate("Scripting.Dictionary")	; Settings object
+;Local $oSettings = ObjCreate("Scripting.Dictionary")	; Settings object
 Local $oMainGUI = ObjCreate("Scripting.Dictionary")		; Main GUI elements object
 
+;	Local $hConnectURL ; client.connect.URL request handler
+;	Local $oPcatProps("bLoginAttempted") = False
+;	Local $oPcatProps("bSelectVerAttempted") = False
+
+
 Func _CtrlMain()
-	Local $iPID = 0 ; Product Catalog Process ID
-	Local $hConnectURL ; client.connect.URL request handler
-	Local $bLoginAttempted = False
-	Local $bSelectVerAttempted = False
 
 	; read the settings from config files
-	$oSettings = _ReadSettings()
+	_ReadSettings()
 
 	; check and update the default platform object
 	; use the value from config if it exists
@@ -38,41 +41,12 @@ Func _CtrlMain()
 	_SetTray()
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
-	; ConsoleWrite("Login " &  $oSettings("login") & $bLoginAttempted  & @CRLF)
+	; ConsoleWrite("Login " &  $oSettings("login") & $oPcatProps("bLoginAttempted")  & @CRLF)
 	; Loop until the user exits.
 	While 1
 		; Get PCAT window handler
 		$hPCAT = _GetPCATHandler()
-		If $hPCAT Then
-			$sTitle = WinGetTitle($hPCAT)
-			; ConsoleWrite($sTitle & @CRLF)
-			Switch $sTitle
-				Case "Login"
-					; Try to autologin if Login InputBox is not Empty and no Login attempts have been made
-					If $oSettings("login") And Not $bLoginAttempted Then
-						_TrayTip("Trying to Login to PCAT", 3)
-						_AutoLogin($hPCAT)
-						$bLoginAttempted = True
-					EndIf
-				Case "Select Reseller Version"
-					If $oSettings("selectVersion") = 1 And Not $bSelectVerAttempted Then
-						_TrayTip("Selecting the Latest version", 2)
-						_AutoVersion($hPCAT)
-						$bSelectVerAttempted = True
-					EndIf
-				Case "Product Catalog"
-					$sNewTitle = "PCAT" & " " & $oPlatfDefault("name") & " " & $oPlatfDefault("timezone")
-					WinSetTitle($hPCAT, "", $sNewTitle)
-				Case $sNewTitle
-					; Check UPM client.connect.URL status and display error if it's not ok
-					If $hConnectURL Then
-						If _GetResponseURL($hConnectURL)==False Then
-							_MsgBoxPropagateRestricted($oPlatfDefault("UPM_IP"))
-							InetClose($hConnectURL)
-						EndIf
-					EndIf
-			EndSwitch
-		EndIf
+		_winPCATproc($hPCAT)
 
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE
@@ -92,7 +66,7 @@ Func _CtrlMain()
 			Case $oMainGUI("runButton")
 				$hPCAT = _GetPCATHandler()
 				; If PCAT is not running, update configs, store options and run PCAT
-				If Not $hPCAT and Not ProcessExists($iPID) Then
+				If Not $hPCAT and Not ProcessExists($oPcatProps("iPID")) Then
 					; Read the GUI data and store it
 					$oSettings("login") = GUICtrlRead($oMainGUI("loginBox"))
 					If $oSettings("login") Then $oSettings("password") = GUICtrlRead($oMainGUI("passwordBox"))
@@ -104,16 +78,16 @@ Func _CtrlMain()
 					EndIf
 					$oSettings("selectVersion") = GUICtrlRead($oMainGUI("versionCheckBox"))
 					; Run PCAT
-					$bLoginAttempted = False
-					$bSelectVerAttempted = False
-					$iPID = Run($PCATPATH)
-					; ConsoleWrite("PID: " & $iPID & @CRLF)
-					; ConsoleWrite("LoginAttempted " & $bLoginAttempted  & @CRLF)
+					$oPcatProps("bLoginAttempted") = False
+					$oPcatProps("bSelectVerAttempted") = False
+					$oPcatProps("iPID") = Run($PCATPATH)
+					; ConsoleWrite("PID: " & $oPcatProps("iPID") & @CRLF)
+					; ConsoleWrite("LoginAttempted " & $oPcatProps("bLoginAttempted")  & @CRLF)
 					If @error Then
 						_RaiseError(4)
 						ContinueCase
 					EndIf
-					$hConnectURL = _SendRequestConnectURL($oPlatfDefault("UPM_IP"))
+					$oPcatProps("hConnectURL") = _SendRequestConnectURL($oPlatfDefault("UPM_IP"))
 				Else
 					_MsgBoxPCATRunning($hPCAT)
 					WinActivate($hPCAT)

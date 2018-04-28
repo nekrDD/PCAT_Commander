@@ -1,6 +1,6 @@
 #include <File.au3>
 
-Global Const $APPVERSION = "1.2.3"
+Global Const $APPVERSION = "1.2.4"
 
 Local Const $PCATDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
 
