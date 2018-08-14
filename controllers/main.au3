@@ -39,6 +39,11 @@ Func _CtrlMain()
 	_SetPlatfControls()
 	; Set tray behaviour
 	_SetTray()
+
+	; update CCC frame
+	; Update platforms Combobox with data
+	GUICtrlSetData($oMainGUI("cccPlatfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
+
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 	; ConsoleWrite("Login " &  $oSettings("login") & $oPcatProps("bLoginAttempted")  & @CRLF)
