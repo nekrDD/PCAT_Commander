@@ -3,9 +3,12 @@
 Global Const $APPVERSION = "1.2.4"
 
 Local Const $PCATDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
+Local Const $CCCDIR = _PathFull("Comverse\ComverseONE CCC\", @ProgramFilesDir)
 
 Global Const $PCATPATH = _PathFull("internal\bin\Product Catalog.exe", $PCATDIR)
+Global Const $CCCPATH = _PathFull("Comverse.CCBS.CCC.exe", $CCCDIR)
 Global Const $CONFPATH = _PathFull("internal\etc\internal.conf", $PCATDIR)
+Global Const $CCCCONFPATH = _PathFull("Comverse.CCBS.CCC.exe.config", $CCCDIR)
 Global Const $SETTINGSPATH = _PathFull("pcSettings\jdbc.properties", @UserProfileDir)
 Global Const $WPCLIENTPATH = _PathFull("pcSettings\workpoint-client.properties", @UserProfileDir)
 ; $DEFAULTCONF is deprecated in versions 1.2.3 and later
