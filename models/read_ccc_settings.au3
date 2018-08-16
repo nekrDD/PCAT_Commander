@@ -1,6 +1,9 @@
 #include './constants.au3'
 #include <StringConstants.au3>
+
+
 Local $oCccSettings = ObjCreate("Scripting.Dictionary")
+_ReadCccSettings()
 Func _ReadCccSettings()
 
 	; Check if CCC config  exists
@@ -14,13 +17,30 @@ Func _ReadCccSettings()
 		Return SetError(3, 7)
 	EndIf
 
-	; Set Login and Password Settings to the values from internal.config
-	Local $arTemp = StringRegExp($sFileContents, '(?m)^(<!--cccCommLogin=)(.*)(-->$)', $STR_REGEXPARRAYMATCH)
-	If Not @error Then $oCccSettings("login") = $arTemp[1]
-	ConsoleWrite($oCccSettings("login") & @CRLF)
+	; Define regexp patterns to look for in the file
+	$oCccSettings("login") = '(?m)^(<!--cccCommLogin=)(.*)(-->$)'
+	$oCccSettings("password") = '(?m)^(<!--cccCommPassword=)(.*)(-->$)'
+	$oCccSettings("platform") = '(?m)^(<!--cccCommPlatform=)(.*)(-->$)'
+
+	; Set Login, Password  and Platform Settings to the values from Comverse.CCBS.CCC.exe.config
+	_GetParams($sFileContents, $oCccSettings)
+	Local $vKey
+	For $vKey in $oCccSettings
+		ConsoleWrite($oCccSettings($vKey) & @CRLF)
+	Next
 EndFunc
 
-_ReadCccSettings()
 
 
 
+; Function to get parameters from file using provided pattern and write it to $oCccSettings dictionary
+Func _GetParams($sFileContents, $oPatterns)
+	For $vKey In $oPatterns
+		Local $arTemp = StringRegExp($sFileContents, $oPatterns.Item($vKey), $STR_REGEXPARRAYMATCH)
+		If Not @error Then
+			$oPatterns($vKey) = $arTemp[1]
+		Else
+			$oPatterns($vKey) = ''
+		EndIf
+	Next
+EndFunc
