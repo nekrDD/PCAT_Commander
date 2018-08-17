@@ -2,8 +2,10 @@
 #include "../views/GUI_main.au3"
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
+#include "../models/read_ccc_settings.au3"
 #include "../models/update_settings.au3"
 #include "../controllers/win_PCAT_proc.au3"
+#include "../controllers/win_CCC_proc.au3"
 ;#include "../models/pcat_props.au3"
 #include "check_connectURL.au3"
 
@@ -12,6 +14,9 @@ Local $sTitle 	; Product Catalog window Title
 Local $sComboRead = "" ; Platform name ComboBox value
 Local $sNewTitle	; new title for Product Catalog window
 Local $oPlatfDefault = ObjCreate("Scripting.Dictionary") ; Default Platform object (name, IP, timezone, UPM_IP)
+Local $hCCC 	; Product Catalog window handler
+Local $sCccTitle 	; Product Catalog window Title
+Local $oCccPlatform = ObjCreate("Scripting.Dictionary") ; Default CCC Platform obj
 ;Local $oSettings = ObjCreate("Scripting.Dictionary")	; Settings object
 Local $oMainGUI = ObjCreate("Scripting.Dictionary")		; Main GUI elements object
 
@@ -31,10 +36,17 @@ Func _CtrlMain()
 		_SetDefaultPlatform(_GetPlatfbyIP($oSettings("ip")))
 	EndIf
 	$oPlatfDefault = _GetDefaultPlatform()
+
+	; read the settings from CCC config files
+	_ReadCccSettings()
+	$oCccPlatform = _GetPlatfbyName($oCccSettings("platfName"))
+
 	; create app main window
 	$oMainGUI = _MainGUI()
 	; Update platforms Combobox with data
-	GUICtrlSetData($oMainGUI("platfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
+	Local $comboNames = _ConcatPlatfNames()
+	GUICtrlSetData($oMainGUI("platfCombo"), $comboNames, $oPlatfDefault("name"))
+
 	; Update Platform Info Boxes with data
 	_SetPlatfControls()
 	; Set tray behaviour
@@ -42,8 +54,8 @@ Func _CtrlMain()
 
 	; update CCC frame
 	; Update platforms Combobox with data
-	GUICtrlSetData($oMainGUI("cccPlatfCombo"), _ConcatPlatfNames(), $oPlatfDefault("name"))
-
+	GUICtrlSetData($oMainGUI("cccPlatfCombo"), $comboNames, $oCccPlatform ("name"))
+	_SetCccPlatfControls()
 	; Display the GUI.
 	GUISetState(@SW_SHOW, $oMainGUI("mainWindow"))
 	; ConsoleWrite("Login " &  $oSettings("login") & $oPcatProps("bLoginAttempted")  & @CRLF)
@@ -51,11 +63,18 @@ Func _CtrlMain()
 	While 1
 		; Get PCAT window handler
 		$hPCAT = _GetPCATHandler()
+		$hCCC = _GetCccHandler()
 		_winPCATproc($hPCAT)
 
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE
 				ExitLoop
+			Case $oMainGUI("cccPlatfCombo")
+				$oCccPlatform = _GetPlatfbyName(GUICtrlRead($oMainGUI("cccPlatfCombo")))
+				_SetCccPlatfControls()
+			Case $oMainGUI("cccRunButton")
+				$hCCC = _GetCccHandler()
+
 			Case $oMainGUI("platfCombo")
 				If Not $hPCAT Then
 					$sComboRead = GUICtrlRead($oMainGUI("platfCombo"))
@@ -112,6 +131,15 @@ Func _GetPCATHandler()
 	Return
 EndFunc
 
+Func _GetCccHandler()
+	Local $hCCC = WinGetHandle("[REGEXPTITLE:(Customer Care Client.*|CCC.*); REGEXPCLASS:WindowsForms.*", "")
+	If $hCCC Then
+		Return $hCCC
+	EndIf
+	Return
+EndFunc
+
+
 ; Set Data for GUI Platform Controls
 Func _SetPlatfControls()
 	; Set items for the combobox.
@@ -128,6 +156,16 @@ Func _SetPlatfControls()
 
 	; Set Autoversion Checkbox
 	GUICtrlSetState($oMainGUI("versionCheckBox"), $oSettings("selectVersion"))
+
+EndFunc
+
+Func _SetCccPlatfControls()
+	; Set InputBoxes Data
+	GUICtrlSetData($oMainGUI("sapiIpBox"), "SOAPFARM" & $oCccPlatform("dname"))
+
+	; Set CCC Login and Password Data
+	GUICtrlSetData($oMainGUI("cccLoginBox"),  $oCccSettings("login"))
+	GUICtrlSetData($oMainGUI("cccPasswordBox"), $oCccSettings("password"))
 EndFunc
 
 ; Autologin
@@ -171,7 +209,7 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	$arErrors[8] = "Error reading jdbc.properties file, couldn't find properly formatted `jdbc.url=""...""` string."
 	$arErrors[9] = "Error reading workpoint-client.properties file, couldn't find properly formatted `client.connect.URL=""...""` string."
 
-	Local $arErrParams[7]
+	Local $arErrParams[8]
 	$arErrParams[0] = ""
 	$arErrParams[1] = $CONFPATH
 	$arErrParams[2] = $SETTINGSPATH
@@ -179,6 +217,7 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	$arErrParams[4] = $SETTINGSPATH & ".bkp"
 	$arErrParams[5] = $WPCLIENTPATH
 	$arErrParams[6] = $WPCLIENTPATH & ".bkp"
+	$arErrParams[7] = $CCCCONFPATH
 
 	MsgBox(4112, "PCAT commander error", $arErrors[$iErrorCode] & @CRLF & $arErrParams[$iErrParamCode])
 
