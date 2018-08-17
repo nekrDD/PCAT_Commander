@@ -18,6 +18,8 @@ Func _ReadSettings()
 		Return SetError(1, 5)
 	EndIf
 
+
+
 	; Get client.connect.URL from workpoint-client.properties
 	;$sFileContents = FileRead($WPCLIENTPATH)
 	;If @error Then
@@ -44,7 +46,7 @@ Func _ReadSettings()
 		Return SetError(3, 1)
 	EndIf
 
-	; Set global Login and Password Settings to the values from internal.config
+	; Set Login and Password Settings to the values from internal.config
 	Local $arTemp = StringRegExp($sFileContents, '(?m)^(#pcCommLogin=)(.*$)', $STR_REGEXPARRAYMATCH)
 	If Not @error Then $oSettings("login") = $arTemp[1]
 

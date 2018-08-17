@@ -1,9 +1,6 @@
-#include './constants.au3'
-#include <StringConstants.au3>
-
 
 Local $oCccSettings = ObjCreate("Scripting.Dictionary")
-_ReadCccSettings()
+;_ReadCccSettings()
 Func _ReadCccSettings()
 
 	; Check if CCC config  exists
@@ -33,7 +30,7 @@ EndFunc
 
 
 
-; Function to get parameters from file using provided pattern and write it to $oCccSettings dictionary
+; Function to get parameters from file using provided param - pattern dictionary and replace the pattern with extracted values(or set blank if not found)
 Func _GetParams($sFileContents, $oPatterns)
 	For $vKey In $oPatterns
 		Local $arTemp = StringRegExp($sFileContents, $oPatterns.Item($vKey), $STR_REGEXPARRAYMATCH)
