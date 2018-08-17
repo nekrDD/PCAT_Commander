@@ -40,6 +40,7 @@ $arPlatforms[5]("name") = "SPB"
 $arPlatforms[5]("IP") = "172.26.132.40"
 $arPlatforms[5]("timezone") = "GMT+3"
 $arPlatforms[5]("UPM_IP") = "172.26.132.67"
+$arPlatforms[5]("dname") = "-spb.vimpelcom.ru"
 
 $arPlatforms[6]("name") = "EKT"
 $arPlatforms[6]("IP") = "10.127.130.120"
@@ -73,7 +74,7 @@ $arPlatforms[10]("dname") = ""
 
 ; Create string for PlatfCombo
 Func  _ConcatPlatfNames()
-	Local $sPatforms
+	Local $sPatforms = ''
 	For $i = 0 To UBound($arPlatforms) - 1
 		$sPatforms = $sPatforms & $arPlatforms[$i]("name") & "|"
 	Next
