@@ -1,5 +1,6 @@
 #include "../models/constants.au3"
 #include "../views/GUI_main.au3"
+#include "../views/tray_lib.au3"
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
 #include "../models/read_ccc_settings.au3"
@@ -65,7 +66,7 @@ Func _CtrlMain()
 		$hPCAT = _GetPCATHandler()
 		$hCCC = _GetCccHandler()
 		_winPCATproc($hPCAT)
-
+		_winCccProc($hCCC)
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE
 				ExitLoop
@@ -131,13 +132,6 @@ Func _GetPCATHandler()
 	Return
 EndFunc
 
-Func _GetCccHandler()
-	Local $hCCC = WinGetHandle("[REGEXPTITLE:(Customer Care Client.*|CCC.*); REGEXPCLASS:WindowsForms.*", "")
-	If $hCCC Then
-		Return $hCCC
-	EndIf
-	Return
-EndFunc
 
 
 ; Set Data for GUI Platform Controls

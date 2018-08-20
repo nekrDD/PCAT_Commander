@@ -1,3 +1,6 @@
+#include-once
+
+#include "./constants.au3"
 
 Local $oCccSettings = ObjCreate("Scripting.Dictionary")
 ;_ReadCccSettings()

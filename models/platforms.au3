@@ -1,3 +1,5 @@
+#include-once
+Local $oCccPlatform = ObjCreate("Scripting.Dictionary")
 Local $oPlatfDefault = ObjCreate("Scripting.Dictionary")
 
 Local $arPlatforms[11]
