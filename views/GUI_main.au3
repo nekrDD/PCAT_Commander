@@ -2,15 +2,16 @@
 #include <MsgBoxConstants.au3>
 #include <EditConstants.au3>
 #include <ComboConstants.au3>
-#include <TrayConstants.au3>
+
 #include <ButtonConstants.au3>
+#include "../models/constants.au3"
 
 
 ; Create GUI Function
 Func _MainGUI()
 	Local $oMainGUI = ObjCreate("Scripting.Dictionary")
     ; Create a GUI
-    $oMainGUI("mainWindow") = GUICreate("C1 Commander v" & $APPVERSION, 440, 250)
+    $oMainGUI("mainWindow") = GUICreate($APPNAME & " v" & $APPVERSION, 440, 250)
 	GUISetIcon("pccomm.ico")
 
 	GUICtrlCreateGroup("PCAT Launcher", 5, 5, 212, 240)
@@ -83,13 +84,3 @@ Func _MsgBoxPropagateRestricted($sFailedURL)
 					'Meantime, you may perform the changes in PCAT safely.')
 EndFunc
 
-Func _SetTray()
-	Opt("TrayAutoPause", 0) ;0=no pause, 1=Pause
-	Opt("TrayMenuMode", 1) ;0=append, 1=no default menu, 2=no automatic check, 4=menuitemID  not return
-	; TraySetOnEvent($TRAY_EVENT_PRIMARYDOUBLE, "TrayEvent")
-EndFunc
-
-Func _TrayTip($sMessage, $iTimeout, $sTipType=1)
-	Const $TITLE = "PCAT Commander"
-	TrayTip($TITLE, $sMessage, $iTimeout, $sTipType)
-EndFunc
