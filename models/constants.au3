@@ -1,6 +1,8 @@
+#include-once
 #include <File.au3>
 
 Global Const $APPVERSION = "1.2.4"
+Global Const $APPNAME = "C1 Commander"
 
 Local Const $PCATDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
 Local Const $CCCDIR = _PathFull("Comverse\ComverseONE CCC\", @ProgramFilesDir)
