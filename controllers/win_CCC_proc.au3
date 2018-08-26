@@ -1,6 +1,6 @@
 #include-once
 #include "../models/platforms.au3"
-#include "../models/read_ccc_settings.au3"
+#include "../models/ccc_settings.au3"
 #include "../views/tray_lib.au3"
 Local $oCccProps = ObjCreate("Scripting.Dictionary")
 
