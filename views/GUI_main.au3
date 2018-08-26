@@ -14,7 +14,7 @@ Func _MainGUI()
     $oMainGUI("mainWindow") = GUICreate($APPNAME & " v" & $APPVERSION, 440, 250)
 	GUISetIcon("pccomm.ico")
 
-	GUICtrlCreateGroup("PCAT Launcher", 5, 5, 212, 240)
+	GUICtrlCreateGroup("PCAT Launcher", 5, 5, 213, 240)
 	; Create a label for Combobox
 	$oMainGUI("platfLabel") = GUICtrlCreateLabel("Platform:", 28, 37)
     ; Create a combobox control.
@@ -47,7 +47,7 @@ Func _MainGUI()
 	GUICtrlCreateGroup("", -99, -99, 1, 1) ;close group
 	;
 	; CCC launcher frame
-	GUICtrlCreateGroup("CCC Launcher",220, 5, 217, 240)
+	GUICtrlCreateGroup("CCC Launcher",223, 5, 213, 240)
 	; Create a label for Combobox
 	$oMainGUI("cccPlatfLabel") = GUICtrlCreateLabel("Platform:", 248, 37)
     ; Create a combobox control.
@@ -55,7 +55,7 @@ Func _MainGUI()
 	; Create a label for IP
 	$oMainGUI("sapiIpLabel") = GUICtrlCreateLabel("SAPI IP:", 248, 67)
 	; Create a inputBox for IP address
-	$oMainGUI("sapiIpBox") = GUICtrlCreateInput("IP address", 295, 65, 120, 20)
+	$oMainGUI("sapiIpBox") = GUICtrlCreateInput("IP address", 295, 65, 120, 40, $ES_MULTILINE)
 	; Create a label for Login
 	$oMainGUI("cccLoginLabel") = GUICtrlCreateLabel("Login:", 258, 137)
 	; Create an inputBox for Login
@@ -71,8 +71,8 @@ Func _MainGUI()
 	return $oMainGUI
 EndFunc
 
-Func _MsgBoxPCATRunning($hPCAT)
-	MsgBox(4144,"PCAT commander info", 'PCAT "' & WinGetTitle($hPCAT) & '" is already running!')
+Func _MsgBoxPCATRunning($hApp, $runAppName='')
+	MsgBox(4144, $APPNAME & " info", $runAppName & ' "' & WinGetTitle($hApp) & '" is already running!')
 EndFunc
 
 Func _MsgBoxPropagateRestricted($sFailedURL)
