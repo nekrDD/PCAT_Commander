@@ -2,6 +2,8 @@
 #include <MsgBoxConstants.au3>
 #include <EditConstants.au3>
 #include <ComboConstants.au3>
+#include <StaticConstants.au3>
+
 
 #include <ButtonConstants.au3>
 #include "../models/constants.au3"
@@ -11,8 +13,16 @@
 Func _MainGUI()
 	Local $oMainGUI = ObjCreate("Scripting.Dictionary")
     ; Create a GUI
-    $oMainGUI("mainWindow") = GUICreate($APPNAME & " v" & $APPVERSION, 440, 250)
+    $oMainGUI("mainWindow") = GUICreate($APPNAME & " v" & $APPVERSION, 440, 268)
 	GUISetIcon("pccomm.ico")
+
+	; Create a menu
+	$oMainGUI("helpMenu") = GUICtrlCreateMenu("Help")
+	$oMainGUI("readmeEng") = GUICtrlCreateMenuItem("Readme ENG (web)", $oMainGUI("helpMenu"))
+	$oMainGUI("readmeRus") = GUICtrlCreateMenuItem("Readme RUS (web)", $oMainGUI("helpMenu"))
+	$oMainGUI("About") = GUICtrlCreateMenuItem("About", $oMainGUI("helpMenu"))
+	; Horizontal line
+	GUICtrlCreateLabel("",1,0,440,2,$SS_SUNKEN)
 
 	GUICtrlCreateGroup("PCAT Launcher", 5, 5, 213, 240)
 	; Create a label for Combobox
@@ -69,6 +79,10 @@ Func _MainGUI()
 	GUICtrlSetImage (-1, "mdiicon.ico")
 	GUICtrlCreateGroup("", -99, -99, 1, 1) ;close group
 	return $oMainGUI
+EndFunc
+
+Func _MsgBoxAbout()
+	MsgBox($MB_SYSTEMMODAL, $APPNAME & " - About", $APPNAME & " Version: " & $APPVERSION & @CRLF & @CRLF & "Created by Alexey Veselov" & @CRLF & @CRLF & "alexey.a.veselov@gmail.com")
 EndFunc
 
 Func _MsgBoxPCATRunning($hApp, $runAppName='')

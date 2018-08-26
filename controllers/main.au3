@@ -9,6 +9,7 @@
 #include "../controllers/win_CCC_proc.au3"
 ;#include "../models/pcat_props.au3"
 #include "check_connectURL.au3"
+#include <IE.au3>
 
 Local $hPCAT 	; Product Catalog window handler
 Local $sTitle 	; Product Catalog window Title
@@ -69,8 +70,19 @@ Func _CtrlMain()
 		_winCccProc($hCCC)
 
 		Switch GUIGetMsg()
+			; Close Event
 			Case $GUI_EVENT_CLOSE
 				ExitLoop
+
+			; Menu events
+			Case $oMainGUI("readmeEng")
+				_IECreate($APPURL & "README.md")
+			Case $oMainGUI("readmeRus")
+				_IECreate($APPURL & "README.RUS.md")
+			Case $oMainGUI("About")
+				_MsgBoxAbout()
+
+			; CCC Launcher events
 			Case $oMainGUI("cccPlatfCombo")
 				$oCccPlatform = _GetPlatfbyName(GUICtrlRead($oMainGUI("cccPlatfCombo")))
 				_SetCccPlatfControls()
@@ -131,7 +143,7 @@ Func _CtrlMain()
 					EndIf
 					$oPcatProps("hConnectURL") = _SendRequestConnectURL($oPlatfDefault("UPM_IP"))
 				Else
-					ConsoleWrite("pcat running - last" & @CRLF)
+					;ConsoleWrite("pcat running - last" & @CRLF)
 					_MsgBoxPCATRunning($hPCAT, "PCAT")
 					WinActivate($hPCAT)
 				EndIf

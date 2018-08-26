@@ -3,6 +3,7 @@
 
 Global Const $APPVERSION = "2.0"
 Global Const $APPNAME = "C1 Commander"
+Global Const $APPURL = "https://github.com/weehaa/PCAT_Commander/blob/master/"
 
 Local Const $PCATDIR = _PathFull("Comverse\CBS-PC\", @ProgramFilesDir)
 Local Const $CCCDIR = _PathFull("Comverse\ComverseONE CCC\", @ProgramFilesDir)
