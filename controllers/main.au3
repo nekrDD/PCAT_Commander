@@ -3,7 +3,7 @@
 #include "../views/tray_lib.au3"
 #include "../models/platforms.au3"
 #include "../models/read_settings.au3"
-#include "../models/read_ccc_settings.au3"
+#include "../models/ccc_settings.au3"
 #include "../models/update_settings.au3"
 #include "../controllers/win_PCAT_proc.au3"
 #include "../controllers/win_CCC_proc.au3"
@@ -40,7 +40,7 @@ Func _CtrlMain()
 
 	; read the settings from CCC config files
 	_ReadCccSettings()
-	$oCccPlatform = _GetPlatfbyName($oCccSettings("platfName"))
+	$oCccPlatform = _GetPlatfbyName($oCccSettings("platform"))
 
 	; create app main window
 	$oMainGUI = _MainGUI()
@@ -67,6 +67,7 @@ Func _CtrlMain()
 		$hCCC = _GetCccHandler()
 		_winPCATproc($hPCAT)
 		_winCccProc($hCCC)
+
 		Switch GUIGetMsg()
 			Case $GUI_EVENT_CLOSE
 				ExitLoop
@@ -74,7 +75,22 @@ Func _CtrlMain()
 				$oCccPlatform = _GetPlatfbyName(GUICtrlRead($oMainGUI("cccPlatfCombo")))
 				_SetCccPlatfControls()
 			Case $oMainGUI("cccRunButton")
-				$hCCC = _GetCccHandler()
+				If Not $hCCC and Not ProcessExists($oCccProps("iPID")) Then
+					$oCccSettings("platform") = $oCccPlatform("name")
+					$oCccSettings("login") = GUICtrlRead($oMainGUI("cccLoginBox"))
+					If $oCccSettings("login") Then $oCccSettings("password") = GUICtrlRead($oMainGUI("cccPasswordBox"))
+					Local $sSapi = GUICtrlRead($oMainGUI("sapiIpBox"))
+					_UpdateCccSettings($sSapi)
+					If not @error Then
+						$oCccProps("iPID") = Run($CCCPATH)
+						$oCccProps("bLoginAttempted") = False
+					Else
+						_RaiseError(@error, @extended)
+					EndIf
+				Else
+					_MsgBoxPCATRunning($hCCC, "CCC")
+					WinActivate($hCCC)
+				EndIf
 
 			Case $oMainGUI("platfCombo")
 				If Not $hPCAT Then
@@ -82,7 +98,8 @@ Func _CtrlMain()
 					$oPlatfDefault = _SetDefaultPlatform(_GetPlatfbyName($sComboRead))
 					_SetPlatfControls()
 				Else
-					_MsgBoxPCATRunning($hPCAT)
+					ConsoleWrite("pcat running - first" & @CRLF)
+					_MsgBoxPCATRunning($hPCAT, "PCAT")
 					WinActivate($hPCAT)
 					; reset platfComboBox to default platform name
 					GUICtrlSetData($oMainGUI("platfCombo"), "")
@@ -114,7 +131,8 @@ Func _CtrlMain()
 					EndIf
 					$oPcatProps("hConnectURL") = _SendRequestConnectURL($oPlatfDefault("UPM_IP"))
 				Else
-					_MsgBoxPCATRunning($hPCAT)
+					ConsoleWrite("pcat running - last" & @CRLF)
+					_MsgBoxPCATRunning($hPCAT, "PCAT")
 					WinActivate($hPCAT)
 				EndIf
 		EndSwitch
@@ -155,7 +173,7 @@ EndFunc
 
 Func _SetCccPlatfControls()
 	; Set InputBoxes Data
-	GUICtrlSetData($oMainGUI("sapiIpBox"), "SOAPFARM" & $oCccPlatform("dname"))
+	GUICtrlSetData($oMainGUI("sapiIpBox"), $oCccPlatform("sapi"))
 
 	; Set CCC Login and Password Data
 	GUICtrlSetData($oMainGUI("cccLoginBox"),  $oCccSettings("login"))
@@ -190,7 +208,7 @@ EndFunc
 
 Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	ConsoleWrite("Error code: " & $iErrorCode & "ErrParamCode: " & $iErrParamCode)
-	Local $arErrors[10]
+	Local $arErrors[11]
 	$arErrors[0] = ""
 	$arErrors[1] = "File not found"
 	$arErrors[2] = "Could not write file. Probably java.exe process is blocking it, or you don't have Admin permissions."
@@ -202,6 +220,8 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	$arErrors[7] = "Error reading internal.conf file, couldn't find properly formatted `default_options=""...""` string."
 	$arErrors[8] = "Error reading jdbc.properties file, couldn't find properly formatted `jdbc.url=""...""` string."
 	$arErrors[9] = "Error reading workpoint-client.properties file, couldn't find properly formatted `client.connect.URL=""...""` string."
+	$arErrors[10] = "Could't update SAPIServiceEndPoint in CCC config file"
+
 
 	Local $arErrParams[8]
 	$arErrParams[0] = ""
@@ -213,6 +233,6 @@ Func _RaiseError($iErrorCode, $iErrParamCode=0)
 	$arErrParams[6] = $WPCLIENTPATH & ".bkp"
 	$arErrParams[7] = $CCCCONFPATH
 
-	MsgBox(4112, "PCAT commander error", $arErrors[$iErrorCode] & @CRLF & $arErrParams[$iErrParamCode])
+	MsgBox(4112, $APPNAME & " error", $arErrors[$iErrorCode] & @CRLF & $arErrParams[$iErrParamCode])
 
 EndFunc
