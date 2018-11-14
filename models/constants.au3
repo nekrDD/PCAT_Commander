@@ -1,7 +1,7 @@
 #include-once
 #include <File.au3>
 
-Global Const $APPVERSION = "2.0"
+Global Const $APPVERSION = "2.1"
 Global Const $APPNAME = "C1 Commander"
 Global Const $APPURL = "https://github.com/weehaa/PCAT_Commander/blob/master/"
 

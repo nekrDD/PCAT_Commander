@@ -70,3 +70,5 @@ The program does not chage security.server.ip in the security file.properties!*
 * 2.0 :
 	* Add Customer Care Client Launcher
 	* Add Help menu
+* 2.1 :
+	* MSK SDP IP changed

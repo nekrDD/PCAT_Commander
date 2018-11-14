@@ -1,4 +1,4 @@
-# Описание:
+﻿# Описание:
 ## “C1 Commander” - скрипт AutoIt для автоматизации изменения конфигурационных файлов Comverse C1 Product Catalog (далее PCAT) и Customer Care Client (далее CCC)
 для подключении к одной из платформ, прописанных в программе (hardcoded).
 Для работы программы необходимо корректно установленный в папку по умолчанию экземпляр PCAT.
@@ -72,3 +72,5 @@ security.server.ip в файле security.properties не менятся!*
 * 2.0
 	* Добавлен CCC Launcher
 	* Добавлено меню Help
+* 2.1 :
+	* MSK SDP IP changed
