@@ -23,7 +23,7 @@ $arPlatforms[1]("UPM_IP") = "192.168.89.84"
 $arPlatforms[1]("sapi") = $SAPI & "-cr.vimpelcom.ru"
 
 $arPlatforms[2]("name") = "MSK"
-$arPlatforms[2]("IP") = "192.168.105.112"
+$arPlatforms[2]("IP") = "192.168.105.94"
 $arPlatforms[2]("timezone") = "GMT+3"
 $arPlatforms[2]("UPM_IP") = "192.168.113.113"
 $arPlatforms[2]("sapi") = $SAPI & "-main.vimpelcom.ru"
