@@ -74,3 +74,5 @@ security.server.ip в файле security.properties не менятся!*
 	* Добавлено меню Help
 * 2.1 :
 	* MSK SDP IP changed
+* 2.1.1 :
+	* Mercury SDP and UPM IPs changed

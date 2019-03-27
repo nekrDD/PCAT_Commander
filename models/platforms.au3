@@ -65,9 +65,9 @@ $arPlatforms[8]("UPM_IP") = "172.27.214.57"
 $arPlatforms[8]("sapi") = $SAPI & "-nsk.vimpelcom.ru"
 
 $arPlatforms[9]("name") = "MERCURY"
-$arPlatforms[9]("IP") = "192.168.91.154"
+$arPlatforms[9]("IP") = "192.168.91.153"
 $arPlatforms[9]("timezone") = "GMT+3"
-$arPlatforms[9]("UPM_IP") = "192.168.112.49"
+$arPlatforms[9]("UPM_IP") = "192.168.106.49"
 $arPlatforms[9]("sapi") = ""
 
 $arPlatforms[10]("name") = "YUPITER"

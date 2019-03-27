@@ -72,3 +72,5 @@ The program does not chage security.server.ip in the security file.properties!*
 	* Add Help menu
 * 2.1 :
 	* MSK SDP IP changed
+* 2.1.1 :
+	* Mercury SDP and UPM IPs changed
